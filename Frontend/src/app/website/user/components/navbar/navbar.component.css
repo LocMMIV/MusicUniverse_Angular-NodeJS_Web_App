@@ -31,6 +31,37 @@
     padding: 15px;
 }
 
+.search-dropdown {
+    position: absolute;
+    top: 105%;
+    left: 0;
+    width: 100%;
+    background: #2B2B36;
+    overflow: hidden;
+    z-index: 1000;
+}
+
+.dropdown-title {
+    font-size: 15px;
+    padding: 8px 12px;
+}
+
+.dropdown-item {
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.dropdown-item:hover {
+    background: rgba(255, 255, 255, 0);
+}
+
+.dropdown-item i {
+    color: #bbb;
+}
+
 .account {
     position: relative;
     display: flex;

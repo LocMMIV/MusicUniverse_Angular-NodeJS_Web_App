@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, HostListener, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 @Component({
@@ -8,17 +7,21 @@ import { isPlatformBrowser } from '@angular/common';
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent implements OnInit {
-  isDropdownOpen = false; // Trạng thái mở/đóng menu
+  isDropdownOpen = false;
   isClicked = false;
 
-  // Toggle trạng thái menu
-  toggleDropdown() {
-    this.isDropdownOpen = !this.isDropdownOpen;
-  }
+  searchQuery = '';
+  openSearch = false;
 
-  toggleClick() {
-    this.isClicked = !this.isClicked;
-  }
+  suggestions = [
+    'em xinh say hi',
+    'phim ba người',
+    'anh vui',
+    'phép màu',
+    '10 mắt 1 còn không',
+    '#zingchart'
+  ];
+  filteredSuggestions = [...this.suggestions];
 
   time: string = '';
   is24Hour: boolean = true;
@@ -26,10 +29,17 @@ export class NavbarComponent implements OnInit {
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit(): void {
-    // CHỈ chạy đồng hồ nếu đang trong trình duyệt
     if (isPlatformBrowser(this.platformId)) {
       this.startClock();
     }
+  }
+
+  toggleDropdown() {
+    this.isDropdownOpen = !this.isDropdownOpen;
+  }
+
+  toggleClick() {
+    this.isClicked = !this.isClicked;
   }
 
   startClock(): void {
@@ -40,7 +50,6 @@ export class NavbarComponent implements OnInit {
       const seconds = this.padZero(now.getSeconds());
 
       let ampm = '';
-
       if (!this.is24Hour) {
         ampm = hours >= 12 ? 'PM' : 'AM';
         hours = hours % 12;
@@ -58,5 +67,22 @@ export class NavbarComponent implements OnInit {
 
   padZero(value: number): string {
     return value < 10 ? '0' + value : value.toString();
+  }
+
+  filterSuggestions() {
+    const q = this.searchQuery.toLowerCase();
+    this.filteredSuggestions = this.suggestions.filter(s =>
+      s.toLowerCase().includes(q)
+    );
+  }
+
+  selectSuggestion(item: string) {
+    this.searchQuery = item;
+    this.openSearch = false;
+  }
+
+  @HostListener('document:click')
+  closeSearch() {
+    this.openSearch = false;
   }
 }

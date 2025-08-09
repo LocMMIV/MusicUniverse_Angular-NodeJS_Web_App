@@ -4,7 +4,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { AdminComponent } from './admin.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SongComponent } from './song/song.component';
-import { RequestComponent } from './request/request.component';
 import { AdminAccountComponent } from './account/admin-account/admin-account.component';
 import { UserAcccountComponent } from './account/user-acccount/user-acccount.component';
 import { ContactComponent } from './contact/contact.component';
@@ -19,7 +18,6 @@ const routes: Routes = [
         { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
         { path: 'dashboard', component: DashboardComponent }, 
         { path: 'song', component: SongComponent },
-        { path: 'request', component: RequestComponent },
         { path: 'admin-account', component: AdminAccountComponent },
         { path: 'user-account', component: UserAcccountComponent },
         { path: 'contact', component: ContactComponent },  

@@ -10,7 +10,6 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { SongComponent } from './song/song.component';
 import { AdminAccountComponent } from './account/admin-account/admin-account.component';
 import { UserAcccountComponent } from './account/user-acccount/user-acccount.component';
-import { RequestComponent } from './request/request.component';
 import { ContactComponent } from './contact/contact.component';
 import { DetailContactComponent } from './contact/detail-contact/detail-contact.component';
 import { DetailSongComponent } from './song/detail-song/detail-song.component';
@@ -26,7 +25,6 @@ import { GenreComponent } from './genre/genre.component';
     SongComponent,
     AdminAccountComponent,
     UserAcccountComponent,
-    RequestComponent,
     ContactComponent,
     DetailContactComponent,
     DetailSongComponent,

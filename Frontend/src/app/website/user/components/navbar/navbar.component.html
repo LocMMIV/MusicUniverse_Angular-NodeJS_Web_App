@@ -8,9 +8,29 @@
         </div>
     </div>
 
-    <div class="search-container">
-        <i class="bi bi-search"></i>
-        <input type="text" placeholder="Tìm kiếm">
+    <!-- Search -->
+    <div class="search-container" (click)="$event.stopPropagation()">
+        <i class="bi bi-search search-icon"></i>
+        <input
+            type="text"
+            [(ngModel)]="searchQuery"
+            (focus)="openSearch = true"
+            (input)="filterSuggestions()"
+            placeholder="Tìm kiếm bài hát..."
+        />
+
+        <!-- Dropdown suggestions -->
+        <div class="search-dropdown" *ngIf="openSearch">
+            <div class="dropdown-title">Đề xuất cho bạn</div>
+            <div
+                class="dropdown-item"
+                *ngFor="let item of filteredSuggestions"
+                (mousedown)="selectSuggestion(item)"
+            >
+                <i class="bi bi-activity"></i>
+                <span>{{ item }}</span>
+            </div>
+        </div>
     </div>
 
     <div class="account" (click)="toggleDropdown(); toggleClick()" [class.clicked]="isClicked">
