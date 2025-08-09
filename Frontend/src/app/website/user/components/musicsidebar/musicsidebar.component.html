@@ -1,0 +1,33 @@
+<div class="music-player" *ngIf="musicService.isPlayerVisible$ | async">
+    <div class="song-info">
+        <div class="info-text">
+            <h3>{{ currentSong?.songName || 'Chúc bạn nghe nhạc vui vẻ' }}</h3>
+            <p>{{ currentSong?.artist || '𝄞' }}</p>
+        </div>
+        <i class="bi bi-download"></i>
+    </div>
+
+    <img class="disc" [src]="currentSong?.image || '/assets/images/default.png'"
+    [class.spin]="currentSong ? isPlaying : true" />
+
+    <div class="controls">
+    <button><i class="bi bi-shuffle"></i></button>
+        <button><i class="bi bi-skip-start-fill"></i></button>
+        <button class="play" (click)="togglePlayPause()">
+            <i [ngClass]="isPlaying ? 'bi bi-pause-circle-fill' : 'bi bi-play-circle-fill'"></i>
+        </button>
+        <button><i class="bi bi-skip-end-fill"></i></button>
+        <button><i class="bi bi-repeat"></i></button>
+    </div>
+
+    <div class="progress">
+        <span>{{ currentTime }}</span>
+            <input type="range" min="0" [max]="duration" [value]="progress" (input)="seek($event)" />
+        <span>{{ totalTime }}</span>
+    </div>
+
+    <div class="volume-control">
+        <i [ngClass]="getVolumeIcon()"></i>
+        <input type="range" class="volume" min="0" max="100" [value]="volume" (input)="changeVolume($event)"/>
+    </div>
+</div>

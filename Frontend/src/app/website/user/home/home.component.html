@@ -1,0 +1,133 @@
+<div class="container-fluid">
+    <div class="suggest">
+        <div class="suggest-text">
+            <h3>Gợi Ý Cho Bạn</h3>
+            <button class="refresh-btn"><i class="bi bi-arrow-repeat"></i>Làm mới</button>
+        </div>
+
+        <br>
+
+        <!-- Gợi ý -->
+        <div class="suggest-item">
+            <div class="row" *ngFor="let suggest of suggestRows; let x = index">
+                <div class="column" *ngFor="let suggestSong of suggest; let y = index" 
+                (click)="playSong(suggestSong)" [class.active]="currentSong === suggestSong">
+                    <img [src]="suggestSong.image || '/assets/images/default.png'" />
+                    <i class="bi play-icon" [ngClass]="{
+                        'bi-pause-fill': currentSong === suggestSong && isPlaying, 
+                        'bi-play-fill': currentSong !== suggestSong || !isPlaying,
+                        'active': currentSong === suggestSong }" >
+                    </i>
+                    <i class="bi" [ngClass]="{
+                        'bi-heart-fill': suggestSong.isLiked, 
+                        'bi-heart': !suggestSong.isLiked,
+                        'active': currentSong === suggestSong }" 
+                        (click)="toggleLike('suggest', x, y); $event.stopPropagation()">
+                    </i>
+                    <div class="title">
+                        <h5>{{ suggestSong.songName }}</h5>
+                        <p>{{ suggestSong.artist }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <br><br>
+    
+    <div class="new">
+        <div class="new-text">
+            <h3>Mới Phát Hành</h3>
+            <a routerLink="/list-song">TẤT CẢ<i class="bi bi-chevron-right"></i></a>
+        </div>
+
+        <br>
+
+        <!-- Mới phát hành -->
+        <div class="new-item">
+            <div class="row" *ngFor="let new of newRows; let x = index">
+                <div class="column" *ngFor="let newSong of new; let y = index" 
+                (click)="playSong(newSong)" [class.active]="currentSong === newSong">
+                    <img [src]="newSong.image || '/assets/images/default.png'" />
+                    <i class="bi play-icon" [ngClass]="{
+                        'bi-pause-fill': currentSong === newSong && isPlaying, 
+                        'bi-play-fill': currentSong !== newSong || !isPlaying,
+                        'active': currentSong === newSong }">
+                    </i>
+                    <i class="bi" [ngClass]="{
+                        'bi-heart-fill': newSong.isLiked, 
+                        'bi-heart': !newSong.isLiked,
+                        'active': currentSong === newSong }" 
+                        (click)="toggleLike('new', x, y); $event.stopPropagation()">
+                    </i>
+                    <div class="title">
+                        <h5>{{ newSong.songName }}</h5>
+                        <p>{{ newSong.artist }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br><br>
+
+    <div class="chart">
+        <div class="left">
+            <a routerLink="/unichart">#unichart<i class="bi bi-play-circle-fill"></i></a>
+            <br><br>
+
+            <!-- Top 1 2 3 -->
+            <div class="top-song" *ngFor="let topSong of top.slice(0, 3); let i = index" [ngClass]="'top-' + (i + 1)" 
+            (click)="playSong(topSong)" [class.active]="currentSong === topSong">
+                <div class="rank-number">{{ i + 1 }}</div>
+                    <img [src]="topSong.image || '/assets/images/default.png'" class="top-song-image"/>
+                    <i class="bi play-icon" [ngClass]="{
+                        'bi-pause-fill': currentSong === topSong && isPlaying,
+                        'bi-play-fill': currentSong !== topSong || !isPlaying }" >
+                    </i>
+                    <div class="song-info">
+                        <div class="song-name">{{ topSong.songName }}</div>
+                        <div class="artist">{{ topSong.artist }}</div>
+                    </div>
+                <div class="view">{{ formatViews(topSong.view) }} <i class="bi bi-ear"></i></div>
+            </div>
+
+            <button class="see-more-btn" routerLink="/unichart">Xem thêm</button>
+        </div>
+
+        <div class="right">
+            <br><br>
+
+            <!-- unichart -->
+            <div class="chart-container">
+                <canvas baseChart
+                    [data]="chartData"
+                    [options]="chartOptions"
+                    [type]="'line'">
+                </canvas>
+            </div>
+        </div>
+    </div>
+
+    <br><br><hr><br>
+
+    <div class="footer-container">
+        <div class="footer-column">
+            <img src="assets/images/footer.png" alt="Footer Logo" class="logo" />
+        </div>
+
+        <div class="footer-column">
+            <span>Thông tin dịch vụ</span>
+            <p>CSKH/Liên hệ qua Zalo: 0853077190</p>
+            <p>Email: 2200006187&#64;nttu.edu.vn</p>
+        </div>
+
+        <div class="footer-column">
+            <span>Doanh nghiệp quản lý</span>
+            <p>Trường Đại học Nguyễn Tất Thành.</p>
+            <p>Địa chỉ: Đỗ Mười/331A-331B An Phú Đông 10, An Phú Đông, Quận 12, Hồ Chí Minh, Việt Nam.</p>
+            <span>Người chịu trách nhiệm nội dung</span>
+            <p>Lê Tấn Lộc - 2200006187</p>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,86 @@
+<div class="container-fluid">
+    <div class="genre-header">
+        <button (click)="toggleAddGenreForm()">Thêm thể loại</button>
+
+        <div *ngIf="isAddGenreFormVisible" class="add-genre-form">
+            <form (ngSubmit)="submitAddGenreForm()" autocomplete="off">
+                <div class="add-genre-header">
+                    <h3>Thêm thể loại mới</h3>
+                    <button type="button" class="close-button" (click)="toggleAddGenreForm()">
+                        <i class="bi bi-x"></i>
+                    </button>
+                </div>
+            
+                <div class="form-group">
+                    <label for="genreName">Thể loại:</label>
+                    <input type="text" id="genreName" [(ngModel)]="newGenre.genreName" name="genreName" required
+                        (ngModelChange)="checkGenreNameDuplicate($event)" #genreName="ngModel"/>
+                    <div *ngIf="genreName?.invalid && genreName?.touched" class="error-message">
+                        Vui lòng nhập đầy đủ thông tin.
+                    </div>
+            
+                    <div *ngIf="isDuplicateGenreName" class="warning-message">
+                        Thể loại này đã tồn tại.
+                    </div>
+                </div>
+                
+                <button type="submit">Lưu thể loại</button>
+            </form>
+        </div>
+
+        <!-- Phân trang -->
+        <div class="pagination">
+            <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">
+                <i class="bi bi-caret-left"></i>
+            </button>
+            <ng-container *ngFor="let page of visiblePages">
+                <button
+                    *ngIf="page !== '...'; else dots"
+                    [class.active]="page === currentPage"
+                    (click)="changePage(page)">
+                    {{ page }}
+                </button>
+                <ng-template #dots><span>...</span></ng-template>
+            </ng-container>
+            <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">
+                <i class="bi bi-caret-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="genre-table-container">
+        <table class="genre-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Thể loại</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr *ngFor="let genre of paginatedData; let i = index">
+                    <td>{{ genre.id }}</td>
+                    <td>{{ genre.genreName }}</td>
+                    <td>
+                        <button class="edit-btn">Sửa</button>
+                        <button class="delete-btn" (click)="openConfirmDeleteDialog(i)">Xóa</button>
+                        <div *ngIf="ConfirmdeleteService.getSelectedIndex() !== null" class="confirm-delete-dialog">
+                            <div class="confirm-delete-dialog-content">
+                                <h3>Bạn có chắc chắn muốn xóa?</h3>
+                                <br/>
+                                <h5>
+                                    <span>ID:</span> {{ paginatedData[ConfirmdeleteService.getSelectedIndex()!]?.id }} <span style="color: yellow;">-- </span>
+                                    <span>Thể loại:</span> {{ paginatedData[ConfirmdeleteService.getSelectedIndex()!]?.genreName }}
+                                </h5>
+                                <br/>
+                                <button (click)="deleteConfirmDeleteDialog('accepted')" class="confirm-btn">Xác nhận</button>
+                                <button (click)="closeConfirmDeleteDialog()" class="cancel-btn">Hủy</button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

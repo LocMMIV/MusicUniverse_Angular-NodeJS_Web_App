@@ -1,0 +1,93 @@
+.notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    max-height: calc(3 * 60px);
+    overflow: hidden;
+    z-index: 999999999999999999999999999999999999999;
+}
+
+.notification {
+    background-color: black;
+    color: white;
+    font-weight: 500;
+    padding: 10px 20px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    opacity: 1;
+    margin-bottom: 10px;
+    transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+    animation: slideIn 0.5s forwards, fadeIn 0.5s forwards;
+}
+
+.notification.success {
+    background-color: limegreen;
+}
+
+.notification.error {
+    background-color: red;
+}
+
+.notification.warning {
+    background-color: gold;
+}
+
+.notification span {
+    flex-grow: 1;
+}
+
+@keyframes slideIn {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.fadeOut {
+    animation: slideOut 0.5s forwards, fadeOutOpacity 0.5s forwards;
+}
+
+@keyframes slideOut {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes fadeOutOpacity {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+.slideUp {
+    animation: slideUp 0.5s forwards;
+}
+
+@keyframes slideUp {
+    0% {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}

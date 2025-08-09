@@ -1,0 +1,64 @@
+<div class="container-fluid">
+
+    <!-- Thể loại -->
+    <div class="genre">
+        <div class="filters">
+            <div class="filter-item">
+                <div class="genre-filters">
+                    <button (click)="setGenre('Ballad')" 
+                        [class.active]="selectedGenre === 'Ballad'"><i class="bi bi-music-note"></i>Ballad</button>
+                    <button (click)="setGenre('Lofi')" 
+                        [class.active]="selectedGenre === 'Lofi'"><i class="bi bi-music-note"></i>Lofi</button>
+                    <button (click)="setGenre('Remix')" 
+                        [class.active]="selectedGenre === 'Remix'"><i class="bi bi-music-note"></i>Remix</button>
+                    <button (click)="setGenre('V-pop')" 
+                        [class.active]="selectedGenre === 'V-pop'"><i class="bi bi-music-note"></i>V-pop</button>
+                    <button (click)="setGenre('Rap')" 
+                        [class.active]="selectedGenre === 'Rap'"><i class="bi bi-music-note"></i>Rap</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bài hát -->
+    <table class="song-table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>BÀI HÁT</th>
+                <th>THỂ LOẠI</th>
+                <th>NGHỆ SĨ</th>
+                <th></th>
+                <th>THỜI GIAN</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let listSong of list; let i = index"
+            (click)="playSong(listSong)" [class.active]="currentSong === listSong">
+                <td><i class="bi bi-music-note-beamed"></i></td>
+                <td>
+                    <div class="song-info">
+                        <div class="image-wrapper">
+                            <img [src]="listSong.image || '/assets/images/default.png'" class="song-image">
+                            <i class="bi play-icon" [ngClass]="{
+                                'bi-pause-fill': currentSong === listSong && isPlaying,
+                                'bi-play-fill': currentSong !== listSong || !isPlaying,
+                                'active': currentSong === listSong }" >
+                            </i>
+                        </div>
+
+                        <span class="song-name">{{ listSong.songName }}</span>
+                    </div>
+                </td>
+                <td>{{ listSong.genre }}</td>
+                <td><p class="artist">{{ listSong.artist }}</p></td>
+                <td>
+                    <i class="bi" [ngClass]="listSong.isLiked ? 'bi-heart-fill' : 'bi-heart'" 
+                    (click)="toggleLike(i); $event.stopPropagation()" ></i>
+                </td>
+                <td><p class="duration">{{ listSong.duration || '...' }}</p></td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>

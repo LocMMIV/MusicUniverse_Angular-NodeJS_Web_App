@@ -1,0 +1,282 @@
+.container-fluid {
+    width: 100%;
+    height: 90vh;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.pagination {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin: 5px 0px;
+    gap: 5px;
+}
+
+.pagination button {
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: bold;
+    border: 1px solid #21222D;
+    border-radius: 0;
+    background-color: #21222D;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.pagination button:hover {
+    background-color: black;
+    border-color: black;
+}
+
+.pagination button.active {
+    background-color: #50d3ff48;
+    color: white;
+    border-color: #50d3ff;
+}
+
+.pagination button:disabled {
+    background-color: #21222D;
+    color: gray;
+    border-color: #21222D;
+    cursor: not-allowed;
+}
+
+.pagination span {
+    color: white;
+}
+
+.song-table-container .pagination {
+    margin-top: auto;
+}
+
+.song-table-container {
+    width: 100%;
+    margin: 20px 0px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.song-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: white;
+    text-align: center;
+}
+
+.song-table th,
+.song-table td {
+    padding: 10px 15px;
+    border: 1px solid #44475e;
+    vertical-align: middle;
+}
+
+.song-table thead tr {
+    background-color: black;
+    color: white;
+}
+
+.song-table tbody tr:nth-child(even) {
+    background-color: #21222D;
+}
+
+/* ID */
+.song-table th:nth-child(1),
+.song-table td:nth-child(1) { width: 5%; }
+/* Bài hát */
+.song-table th:nth-child(2),
+.song-table td:nth-child(2) { width: 20%; }
+/* Hình ảnh */
+.song-table th:nth-child(3),
+.song-table td:nth-child(3) { width: 10%; }
+/* Âm thanh */
+.song-table th:nth-child(4),
+.song-table td:nth-child(4) { width: 20%; }
+/* Thể loại */
+.song-table th:nth-child(5),
+.song-table td:nth-child(5) { width: 20%; }
+/* Nghệ sĩ */
+.song-table th:nth-child(6),
+.song-table td:nth-child(6) { width: 15%; }
+/* Thao tác */
+.song-table th:nth-child(7),
+.song-table td:nth-child(7) { width: 20%; }
+
+
+
+.edit-btn,
+.delete-btn,
+.detail-btn {
+    padding: 5px 10px;
+    cursor: pointer;
+    color: white;
+    font-size: 14px;
+    margin: 2.5px;
+}
+
+.edit-btn {
+    border: 1px solid #17a2b8;
+    background-color: #17a3b848;
+}
+
+.delete-btn {
+    border: 1px solid #dc3545;
+    background-color: #dc354644;
+}
+
+.detail-btn {
+    border: 1px solid #17b824;
+    background-color: #17b82442;
+}
+
+.edit-btn:hover {
+    border: 1px solid #138496;
+    background-color: #1384964b;
+}
+
+.delete-btn:hover {
+    border: 1px solid #c82333;
+    background-color: #c8233344;
+}
+
+.detail-btn:hover {
+    border: 1px solid #179613;
+    background-color: #17961338;
+}
+
+audio::-webkit-media-controls-volume-slider,
+audio::-webkit-media-controls-volume-control-container,
+audio::-webkit-media-controls-download-button,
+audio::-webkit-media-controls-fullscreen-button {
+    display: none;
+}
+
+audio::-webkit-media-controls-timeline {
+    height: 4px;
+}
+
+audio {
+    width: 100%;
+    height: 40px;
+}
+
+audio::-webkit-media-controls-current-time-display,
+audio::-webkit-media-controls-time-remaining-display {
+    color: #333;
+    font-size: 14px;
+}
+
+.confirm-delete-dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    z-index: 10000;
+}
+
+.confirm-delete-dialog-content {
+    background: #171821;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 30%;
+    text-align: center;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.confirm-delete-dialog-content h3 {
+    font-size: 25px;
+    font-weight: 500;
+}
+.confirm-delete-dialog-content h5 {
+    font-size: 20px;
+    font-weight: 400;
+}
+
+.confirm-delete-dialog-content h5 span {
+    color: deepskyblue;
+    font-weight: 500;
+}
+
+.confirm-btn, .cancel-btn {
+    padding: 7px 13px;
+    cursor: pointer;
+    margin: 0 5px;
+    font-size: 15px;
+    font-weight: bold;
+    text-transform: uppercase;
+    background-color: transparent;
+}
+
+.confirm-btn {
+    border: 2px solid limegreen;
+    color: limegreen;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.confirm-btn:hover {
+    background-color: limegreen;
+    color: white;
+}
+
+.cancel-btn {
+    border: 2px solid crimson;
+    color: crimson;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.cancel-btn:hover {
+    background-color: crimson;
+    color: white;
+}
+
+.selected-items {
+    display: inline-block;
+}
+
+select option {
+    font-size: 15px;
+    padding: 5px;
+    background-color: #171821;
+    color: white;
+}
+
+.selected-items .selected-btn {
+    display: inline-block;
+    text-transform: none;
+    margin: 5px;
+    padding: 5px 10px;
+    background-color: skyblue;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.selected-items .selected-btn:hover {
+    background-color: deepskyblue;
+}
+
+.delete-icon:hover {
+    color: red;
+}
+

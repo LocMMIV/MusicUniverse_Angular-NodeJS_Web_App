@@ -1,0 +1,387 @@
+.container-fluid {
+    padding: 50px;
+}
+
+.upload-song-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.upload-song-table th,
+.upload-song-table td {
+    text-align: left;
+    padding: 10px;
+}
+
+.upload-song-table th {
+    font-size: 14px;
+    color: gray;
+    text-transform: uppercase;
+    border-bottom: 1px solid #595962;
+}
+
+.upload-song-table td {
+    font-size: 16px;
+    vertical-align: middle;
+    border-bottom: 1px solid #595962;
+}
+
+.upload-song-table tr:hover td {
+    background-color: #21222D;
+}
+
+.upload-song-table tr:hover .upload-song-name {
+    color: deepskyblue;
+}
+
+.upload-song-table tr:hover .artist,
+.upload-song-table tr:hover .duration,
+.upload-song-table tr:hover .bi-music-note-beamed,
+.upload-song-table tr:hover .bi-list {
+    color: white;
+}
+
+.upload-song-table tr:hover .album-cover {
+    filter: brightness(0.8);
+}
+
+.upload-song-table th:nth-child(1),
+.upload-song-table td:nth-child(1) { 
+    width: 5%;
+    text-align: center;
+}
+.upload-song-table th:nth-child(2),
+.upload-song-table td:nth-child(2) { 
+    width: 45%; 
+    text-align: left;
+}
+
+.upload-song-table th:nth-child(3),
+.upload-song-table td:nth-child(3) {
+    display: none;
+}
+
+.upload-song-table th:nth-child(4),
+.upload-song-table td:nth-child(4) { 
+    width: 40%; 
+    text-align: left;
+}
+.upload-song-table th:nth-child(5),
+.upload-song-table td:nth-child(5) { 
+    width: 10%; 
+    text-align: center;
+}
+
+.upload-song-info {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.upload-song-image {
+    width: 50px;
+    height: 50px;
+    margin-right: 15px;
+}
+
+.play-icon {
+    position: absolute;
+    top: 50%;
+    left: 5%;
+    font-size: 30px;
+    transform: translate(-50%, -50%);
+    display: none;
+}
+
+.upload-song-info:hover .play-icon {
+    display: block;
+}
+
+.upload-song-info:hover .upload-song-image {
+    filter: brightness(0.6);
+}
+
+.upload-song-duration {
+    display: flex;
+    align-items: center;
+}
+
+.upload-song-image {
+    width: 50px;
+    height: 50px;
+    margin-right: 15px;
+}
+
+.upload-song-name {
+    font-weight: 500;
+    color: white;
+    font-size: 18px;
+    margin: 0;
+}
+
+.artist {
+    font-size: 15px;
+    color: gray;
+    font-weight: 500;
+    margin: 0;
+}
+
+.duration {
+    font-size: 15px;
+    color: gray;
+    font-weight: 500;
+    margin: 0;
+}
+
+.bi-music-note-beamed {
+    color: gray;
+}
+
+.bi-heart {
+    color: #ff4d4d;
+    margin-right: 20px;
+}
+
+.bi-heart-fill {
+    color: #ff4d4d;
+    margin-right: 20px;
+}
+
+.bi-list {
+    color: gray;
+}
+
+.bi-list:hover {
+    border-radius: 50%;
+    background-color: #171821;
+    padding: 8px 11px;
+}
+
+.upload-btn {
+    background-color: skyblue;
+    color: black;
+    font-weight: 500;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.upload-btn:hover {
+    background-color: deepskyblue;
+}
+
+
+.add-upload-song-form {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    z-index: 10000;
+}
+
+.add-upload-song-form form {
+    background: #171821;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 40%;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.add-upload-song-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.add-upload-song-header h3 {
+    margin: 0;
+    font-size: 25px;
+    color: white;
+}
+
+.add-upload-song-header .close-button {
+    font-size: 25px;
+    border: none;
+    cursor: pointer;
+    background: none;
+}
+
+.add-upload-song-header .close-button:hover {
+    color: red;
+    background: none;
+}
+
+.add-upload-song-form .error-message {
+    color: red;
+    font-size: 14px;
+    font-weight: 500;
+    padding-left: 10px;
+}
+
+.add-upload-song-form .warning-message {
+    color: yellow;
+    font-size: 14px;
+    font-weight: 500;
+    padding-left: 10px;
+}
+
+.add-upload-song-form .form-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.add-upload-song-form .form-group {
+    flex: 1;
+}
+
+.add-upload-song-form label {
+    color: white;
+    display: block;
+    margin: 5px;
+}
+
+.add-upload-song-form input[type="text"],
+.add-upload-song-form input[type="email"],
+.add-upload-song-form input[type="password"] {
+    background-color: #21222D;
+    color: white;
+    border: none;
+    padding: 12px 15px;
+    margin: 0;
+    width: 100%;
+    background-clip: padding-box;
+}
+
+.add-upload-song-form input[type="text"]:hover,
+.add-upload-song-form input[type="email"]:hover,
+.add-upload-song-form input[type="password"]:hover {
+    background-color: #1A1B24;
+    outline: none;
+}
+
+.add-upload-song-form input[type="text"]:focus,
+.add-upload-song-form input[type="email"]:focus,
+.add-upload-song-form input[type="password"]:focus {
+    background-color: #1A1B24;
+    outline: none;
+}
+
+.add-upload-song-form button {
+    border: 2px solid #00c3ff;
+    background-color: transparent;
+    color: #00c3ff;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 10px 30px;
+    margin: 15px 0px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.add-upload-song-form button:hover {
+    background-color: #00c3ff;
+    color: white;
+}
+
+.confirm-delete-dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    z-index: 10000;
+}
+
+.confirm-delete-dialog-content {
+    background: #171821;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 30%;
+    text-align: center;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.confirm-delete-dialog-content h3 {
+    font-size: 25px;
+    font-weight: 500;
+}
+.confirm-delete-dialog-content h5 {
+    font-size: 20px;
+    font-weight: 400;
+}
+
+.confirm-delete-dialog-content h5 span {
+    color: deepskyblue;
+    font-weight: 500;
+}
+
+.confirm-btn, .cancel-btn {
+    padding: 7px 13px;
+    cursor: pointer;
+    margin: 0 5px;
+    font-size: 15px;
+    font-weight: bold;
+    text-transform: uppercase;
+    background-color: transparent;
+}
+
+.confirm-btn {
+    border: 2px solid limegreen;
+    color: limegreen;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.confirm-btn:hover {
+    background-color: limegreen;
+    color: white;
+}
+
+.cancel-btn {
+    border: 2px solid crimson;
+    color: crimson;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.cancel-btn:hover {
+    background-color: crimson;
+    color: white;
+}

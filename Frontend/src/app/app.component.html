@@ -1,0 +1,5 @@
+<audio #globalAudio (ended)="onEnded()" (play)="onPlay()" (pause)="onPause()">
+  <source [src]="currentSong?.audioUrl" type="audio/mp3" />
+</audio>
+<app-notification></app-notification>
+<router-outlet></router-outlet>

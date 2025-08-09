@@ -1,0 +1,82 @@
+<div class="container-fluid">
+    <!-- Phân trang -->
+    <div class="pagination">
+        <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">
+        <i class="bi bi-caret-left"></i>
+        </button>
+    
+        <ng-container *ngFor="let page of visiblePages">
+        <button
+            *ngIf="page !== '...'; else dots"
+            [class.active]="page === currentPage"
+            (click)="changePage(page)">
+            {{ page }}
+        </button>
+        <ng-template #dots>
+            <span>...</span>
+        </ng-template>
+        </ng-container>
+    
+        <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">
+        <i class="bi bi-caret-right"></i>
+        </button>
+    </div>
+    
+    <div class="request-table-container">
+        <table class="request-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Họ tên</th>
+                    <th>Tên tài khoản</th>
+                    <th>Email</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let request of paginatedData; let i = index"
+                [ngClass]="{ 'accepted-row': request.status === 'accepted', 'rejected-row': request.status === 'rejected'}">
+                    <td>{{ request.id }}</td>
+                    <td>{{ request.fullName }}</td>
+                    <td>{{ request.userName }}</td>
+                    <td>{{ request.email }}</td>
+                    <td>
+                        <button class="request-processing-btn" (click)="openForm(i)">Xử lý yêu cầu</button>
+                        <div *ngIf="selectedRequestIndex !== null" class="request-form-overlay">
+                            <div class="request-form">
+                                <h3>Xử lý yêu cầu</h3>
+                                <br>
+                                <h5>
+                                    <span>ID:</span> {{ paginatedData[selectedRequestIndex]?.id }} <span style="color: yellow;">-- </span>
+                                    <span>Họ tên:</span> {{ paginatedData[selectedRequestIndex]?.fullName }}
+                                </h5>
+                                <h5>
+                                    <span>Tên tài khoản:</span> {{ paginatedData[selectedRequestIndex]?.userName }} <span style="color: yellow;">-- </span>
+                                    <span>Email:</span> {{ paginatedData[selectedRequestIndex]?.email }}
+                                </h5>
+                                <br>
+                                <button class="accepted-btn" (click)="processRequest('accepted')">Chấp nhận</button>
+                                <button class="rejected-btn" (click)="processRequest('rejected')">Từ chối</button>
+                                <button class="close-btn" (click)="closeForm()">Đóng</button>
+                            </div>
+                        </div>
+                        <button class="delete-btn" (click)="openConfirmDeleteDialog(i)">Xóa</button>
+                        <div *ngIf="ConfirmdeleteService.getSelectedIndex() !== null" class="confirm-delete-dialog">
+                            <div class="confirm-delete-dialog-content">
+                                <h3>Bạn có chắc chắn muốn xóa?</h3>
+                                <br/>
+                                <h5>
+                                    <span>ID:</span> {{ paginatedData[ConfirmdeleteService.getSelectedIndex()!]?.id }} <span style="color: yellow;">-- </span>
+                                    <span>Tên bài hát:</span> {{ paginatedData[ConfirmdeleteService.getSelectedIndex()!]?.email }}
+                                </h5>
+                                <br/>
+                                <button (click)="deleteConfirmDeleteDialog('accepted')" class="confirm-btn">Xác nhận</button>
+                                <button (click)="closeConfirmDeleteDialog()" class="cancel-btn">Hủy</button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

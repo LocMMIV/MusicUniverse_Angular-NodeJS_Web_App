@@ -1,0 +1,31 @@
+<div class="container-fluid">
+    <div class="detail-song">
+        <div class="img">
+            <img [src]="song.image" alt="Hình ảnh bài hát" class="song-image">
+            <div class="detail-song-btn">
+                <button class="resolve-btn" (click)="onResolve()">Sửa</button>
+                <button class="back-btn" (click)="onGoBack()">Quay lại</button>
+            </div>
+        </div>
+        <div class="text">
+            <div class="custom-audio-player">
+                <div class="music-btn" (click)="togglePlayPause()">
+                    <span class="music-control" *ngIf="!isPlaying"><i class="bi bi-play-fill"></i></span>
+                    <span class="music-control" *ngIf="isPlaying"><i class="bi bi-pause-fill"></i></span>
+                </div>
+                <div class="seekbar">
+                    <span class="music-seekbar">{{ formatTime(currentTime) }}</span>
+                    <input type="range" [min]="0" [max]="audioDuration" [(ngModel)]="currentTime" (input)="onTimeUpdate()" [style.background]="seekbarGradient" />
+                    <span class="music-seekbar">{{ formatTime(audioDuration - currentTime) }}</span>
+                </div>
+            </div>
+            <div class="content">
+                <p><span class="span-text">Bài hát:</span> {{ song.songName }}</p>
+                <p><span class="span-text">Nghệ sĩ:</span> {{ song.artist }}</p>
+                <p><span class="span-text">Thể loại:</span> {{ song.genre }}</p>
+                <p><span class="span-text">Lời bài hát:</span></p>
+            <p [innerHTML]="song.lyric"></p>
+            </div>
+        </div>
+    </div>
+</div>

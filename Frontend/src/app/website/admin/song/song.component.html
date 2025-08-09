@@ -1,0 +1,73 @@
+<div class="container-fluid">
+    <!-- Phân trang -->
+    <div class="pagination">
+        <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">
+        <i class="bi bi-caret-left"></i>
+        </button>
+    
+        <ng-container *ngFor="let page of visiblePages">
+        <button
+            *ngIf="page !== '...'; else dots"
+            [class.active]="page === currentPage"
+            (click)="changePage(page)">
+            {{ page }}
+        </button>
+        <ng-template #dots>
+            <span>...</span>
+        </ng-template>
+        </ng-container>
+    
+        <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">
+        <i class="bi bi-caret-right"></i>
+        </button>
+    </div>
+    
+    <div class="song-table-container">
+        <table class="song-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Bài hát</th>
+                    <th>Hình ảnh</th>
+                    <th>Âm thanh</th>
+                    <th>Nghệ sĩ</th>
+                    <th>Thể loại</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr *ngFor="let song of paginatedData; let i = index">
+                    <td>{{ song.id }}</td>
+                    <td>{{ song.songName }}</td>
+                    <td><img [src]="song.image" [alt]="song.songName" width="70" height="70"></td>
+                    <td>
+                        <audio #audioPlayer controls controlsList="nodownload noplaybackrate" (play)="playAudio(audioPlayer)" (pause)="pauseAudio(audioPlayer)">
+                            <source [src]="song.audio" type="audio/mpeg">
+                        </audio>
+                    </td>
+                    <td>{{ song.artist }}</td>
+                    <td>{{ song.genre }}</td>
+                    <td>
+                        <button class="edit-btn">Sửa</button>
+                        <button class="delete-btn" (click)="openConfirmDeleteDialog(i)">Xóa</button>
+                        <div *ngIf="ConfirmdeleteService.getSelectedIndex() !== null" class="confirm-delete-dialog">
+                            <div class="confirm-delete-dialog-content">
+                                <h3>Bạn có chắc chắn muốn xóa?</h3>
+                                <br/>
+                                <h5>
+                                    <span>ID:</span> {{ paginatedData[ConfirmdeleteService.getSelectedIndex()!]?.id }} <span style="color: yellow;">-- </span>
+                                    <span>Bài hát:</span> {{ paginatedData[ConfirmdeleteService.getSelectedIndex()!]?.songName }}
+                                </h5>
+                                <br/>
+                                <button (click)="deleteConfirmDeleteDialog('accepted')" class="confirm-btn">Xác nhận</button>
+                                <button (click)="closeConfirmDeleteDialog()" class="cancel-btn">Hủy</button>
+                            </div>
+                        </div>
+                        <button class="detail-btn" (click)="navigateToDetailSong()">Xem chi tiết</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

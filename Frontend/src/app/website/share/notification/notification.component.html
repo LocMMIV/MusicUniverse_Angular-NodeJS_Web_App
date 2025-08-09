@@ -1,0 +1,5 @@
+<div class="notification-container">
+    <div *ngFor="let msg of messageList" class="notification" [ngClass]="msg.type">
+        {{ msg.message }}
+    </div>
+</div>

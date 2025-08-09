@@ -1,0 +1,41 @@
+<div class="container-fluid">
+    <table class="favorite-song-table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>BÀI HÁT</th>
+                <th>NGHỆ SĨ</th>
+                <th></th>
+                <th>THỜI GIAN</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            <tr *ngFor="let favoriteSong of favorite; let i = index"
+            (click)="playSong(favoriteSong)" [class.active]="currentSong === favoriteSong">
+                <td><i class="bi bi-music-note-beamed"></i></td>
+                <td>
+                    <div class="favorite-song-info">
+                        <div class="image-wrapper">
+                            <img [src]="favoriteSong.image || '/assets/images/default.png'" class="favorite-song-image">
+                            <i class="bi play-icon" [ngClass]="{
+                                'bi-pause-fill': currentSong === favoriteSong && isPlaying,
+                                'bi-play-fill': currentSong !== favoriteSong || !isPlaying,
+                                'active': currentSong === favoriteSong }" >
+                            </i>
+                        </div>
+
+                        <span class="song-name">{{ favoriteSong.songName }}</span>
+                    </div>
+                </td>
+                <td><p class="artist">{{ favoriteSong.artist }}</p></td>
+                <td>
+                    <i class="bi" [ngClass]="favoriteSong.isLiked ? 'bi-heart-fill' : 'bi-heart'" 
+                    (click)="toggleLike(i);  $event.stopPropagation()" ></i>
+                </td>
+                <td><p class="duration">{{ favoriteSong.duration }}</p></td>
+            </tr>
+
+        </tbody>
+    </table>
+</div>

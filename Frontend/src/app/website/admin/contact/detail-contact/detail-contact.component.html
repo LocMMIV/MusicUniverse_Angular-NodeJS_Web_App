@@ -1,0 +1,14 @@
+<div class="container-fluid">
+    <div class="detail-contact-text">
+        <p><span>Họ tên:</span> {{ contact.fullName }}</p>
+        <p><span>Tên tài khoản:</span> {{ contact.userName }}</p>
+        <p><span>Email:</span> {{ contact.email }}</p>
+        <p><span>Yêu cầu hỗ trợ:</span> {{ contact.request }}</p>
+        <p><span>Nội dung:</span> {{ contact.content }}</p>
+
+        <div class="detail-contact-btn">
+            <button class="resolve-btn" (click)="onResolve()">Giải quyết</button>
+            <button class="back-btn" (click)="onGoBack()">Quay lại</button>
+        </div>
+    </div>
+</div>

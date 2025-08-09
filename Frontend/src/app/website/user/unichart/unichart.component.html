@@ -1,0 +1,59 @@
+<div class="container-fluid">
+    <h2 class="unichart-title">#unichart<i class="bi bi-play-circle-fill"></i></h2>
+    <div class="unichart-container">
+        <canvas baseChart
+            [data]="chartData"
+            [options]="chartOptions"
+            [type]="'line'">
+        </canvas>
+    </div>
+
+
+    <table class="unichart-table">
+        <thead>
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+
+            <tr *ngFor="let unichartSong of unichart.slice(0, 100); let i = index"
+            (click)="playSong(unichartSong)" [class.active]="currentSong === unichartSong">
+                <td>
+                    <span class="ranking-number" [ngClass]="{
+                        'top-1': i === 0,
+                        'top-2': i === 1,
+                        'top-3': i === 2
+                    }">{{ i + 1 }}</span>
+                </td>
+
+                <td>
+                    <div class="unichart-info">
+                        <div class="image-wrapper">
+                            <img [src]="unichartSong.image || '/assets/images/default.png'" class="unichart-image" />
+                            <i class="bi play-icon" [ngClass]="{ 
+                                'bi-pause-fill': currentSong === unichartSong && isPlaying, 
+                                'bi-play-fill': currentSong !== unichartSong || !isPlaying, 
+                                'active': currentSong === unichartSong }" >
+                            </i>
+                        </div>
+                        <span class="song-name">{{ unichartSong.songName }}</span>
+                    </div>
+                </td>
+                <td>{{ unichartSong.genre }}</td>
+                <td><p class="artist">{{ unichartSong.artist }}</p></td>
+                <td>
+                    <i class="bi" [ngClass]="unichartSong.isLiked ? 'bi-heart-fill' : 'bi-heart'" 
+                    (click)="toggleLike(i);  $event.stopPropagation()" ></i>
+                </td>
+                <td><p class="duration">{{ unichartSong.duration }}</p></td>
+            </tr>
+
+        </tbody>
+    </table>
+</div>

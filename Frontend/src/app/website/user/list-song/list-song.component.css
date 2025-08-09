@@ -1,0 +1,202 @@
+.container-fluid {
+    padding: 50px;
+}
+
+.song-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.song-table th,
+.song-table td {
+    text-align: left;
+    padding: 10px;
+}
+
+.song-table th {
+    font-size: 14px;
+    color: gray;
+    text-transform: uppercase;
+    border-bottom: 1px solid #595962;
+}
+
+.song-table td {
+    font-size: 16px;
+    vertical-align: middle;
+    border-bottom: 1px solid #595962;
+}
+
+.song-table th:nth-child(1),
+.song-table td:nth-child(1) {
+    width: 5%;
+    text-align: center;
+}
+
+.song-table th:nth-child(2),
+.song-table td:nth-child(2) {
+    width: 40%;
+}
+
+.song-table th:nth-child(3),
+.song-table td:nth-child(3) {
+    display: none;
+}
+
+.song-table th:nth-child(4),
+.song-table td:nth-child(4) {
+    width: 40%;
+}
+
+.song-table th:nth-child(5),
+.song-table td:nth-child(5) {
+    width: 5%;
+    text-align: center;
+}
+.song-table th:nth-child(6),
+.song-table td:nth-child(6) {
+    width: 10%;
+    text-align: center;
+}
+
+.song-table tr:hover td,
+tr.active td {
+    background-color: #21222D;
+}
+
+.song-table tr:hover .song-name,
+tr.active .song-name {
+    color: deepskyblue;
+}
+
+.song-table tr:hover .artist,
+.song-table tr:hover .duration,
+.song-table tr:hover .bi-music-note-beamed,
+tr.active .artist,
+tr.active .duration,
+tr.active .bi-music-note-beamed {
+    color: white;
+}
+
+.song-table tr:hover .album-cover {
+    filter: brightness(0.8);
+}
+
+tr.active .song-image {
+    filter: brightness(50%);
+}
+
+tr.active .play-icon {
+    display: block;
+}
+
+/* --- KHỐI BÀI HÁT --- */
+.song-info {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.song-image {
+    width: 50px;
+    height: 50px;
+    margin-right: 15px;
+}
+
+.play-icon {
+    position: absolute;
+    top: 50%;
+    left: 5.5%;
+    font-size: 30px;
+    transform: translate(-50%, -50%);
+    display: none;
+}
+
+.song-info:hover .play-icon {
+    display: block;
+}
+
+.song-info:hover .song-image {
+    filter: brightness(0.6);
+}
+
+.song-name {
+    font-weight: 500;
+    color: white;
+    font-size: 18px;
+    margin: 0;
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.artist,
+.duration {
+    font-size: 15px;
+    font-weight: 500;
+    color: gray;
+    margin: 0;
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.bi-music-note-beamed {
+    color: gray;
+    font-size: 20px;
+}
+
+.bi-heart,
+.bi-heart-fill {
+    color: #ff4d4d;
+    margin-right: 20px;
+}
+
+/* --- BỘ LỌC THỂ LOẠI --- */
+.filters {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 30px;
+    padding-bottom: 20px;
+}
+
+.filter-item {
+    flex-basis: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.genre-filters {
+    display: flex;
+    gap: 10px;
+}
+
+.filter-item i {
+    margin-right: 5px;
+}
+
+button {
+    padding: 8px 15px;
+    background-color: #21222D;
+    color: white;
+    border: none;
+    border-radius: 0;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+button:hover {
+    border-bottom: solid 3px deepskyblue;
+}
+
+button.active {
+    border-bottom: solid 3px deepskyblue;
+}

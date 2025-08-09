@@ -1,0 +1,80 @@
+<div class="container-fluid">
+    <button (click)="toggleUploadForm()" class="upload-btn">Tải lên</button>
+
+    <!-- Form thêm bài hát -->
+    <div *ngIf="isUploadFormVisible" class="add-upload-song-form">
+        <form (ngSubmit)="submitSongForm()">
+            <div class="add-upload-song-header">
+                <h3>Thêm bài hát</h3>
+                <button type="button" class="close-button" (click)="toggleUploadForm()">
+                <i class="bi bi-x"></i>
+            </button>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="audioFile">File nhạc:</label>
+                    <input type="file" id="audioFile" (change)="onAudioSelected($event)" accept=".mp3" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="imageFile">Ảnh bài hát:</label>
+                    <input type="file" id="imageFile" (change)="onImageSelected($event)" accept="image/*" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="songName">Tên bài hát:</label>
+                <input type="text" id="songName" [(ngModel)]="newSong.songName" name="songName" required />
+            </div>
+
+            <div class="form-group">
+                <label for="artist">Nghệ sĩ:</label>
+                <input type="text" id="artist" [(ngModel)]="newSong.artist" name="artist" required />
+            </div>
+
+            <div class="form-group">
+                <label for="genre">Thể loại:</label>
+                <input type="text" id="genre" [(ngModel)]="newSong.genre" name="genre" required />
+            </div>
+
+            <button type="submit">Tải lên</button>
+        </form>
+    </div>
+
+    <!-- Danh sách bài hát đã tải -->
+    <table class="upload-song-table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>BÀI HÁT</th>
+                <th>THỂ LOẠI</th>
+                <th>NGHỆ SĨ</th>
+                <th>THỜI GIAN</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let song of uploadedSongs; let i = index">
+                    <td><i class="bi bi-music-note-beamed"></i></td>
+                <td>
+                <div class="upload-song-info">
+                    <div class="image-wrapper">
+                        <img [src]="song.image" alt="" class="upload-song-image" />
+                        <i class="bi play-icon" 
+                            [ngClass]="{ 'bi-play-fill': currentSong !== song, 'bi-pause-fill': currentSong === song }"
+                        (click)="playSong(song)"></i>
+                    </div>
+                    <p class="duration">{{ song.duration || '...' }}</p>
+                    </div>
+                    </td>
+                    <td>{{ song.genre }}</td>
+                    <td><p class="artist">{{ song.artist }}</p></td>
+                    <td><p class="duration">{{ song.duration }}</p></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <audio #audioPlayer>
+        <source [src]="currentSong?.audioUrl" type="audio/mp3" />
+    </audio>
+</div>

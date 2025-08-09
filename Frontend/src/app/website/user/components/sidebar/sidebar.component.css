@@ -1,0 +1,85 @@
+.logo img {
+    width: 80%;
+    display: block;
+    margin: 0 auto;
+    padding: 20px 0px;
+}
+
+.menu,
+.utility-menu {
+  list-style-type: none;
+  position: relative;
+  width: 100%;
+  padding: 20px 0px 0px 0px;
+  margin: 0;
+}
+
+.menu li a,
+.utility-menu li a {
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 500;
+  padding: 15px 20px;
+  color: gray;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: .1s linear;
+}
+
+.menu li a:hover,
+.utility-menu li a:hover {
+  color: white;
+  width: 100%;
+}
+
+.menu li a.active,
+.utility-menu li a.active {
+  color: white;
+  background: #353647;
+  width: 100%;
+  border-left: 4px solid deepskyblue;
+}
+
+.menu li a span,
+.utility-menu li a span {
+  position: relative;
+}
+
+.menu span,
+.utility-menu span {
+  display: none;
+}
+
+.menu .bi,
+.utility-menu .bi {
+  display: flex;
+  margin-right: 15px;
+}
+
+hr {
+  width: 80%;
+  margin: 20px auto;
+}
+
+.utility-menu .bi {
+  color: white;
+  padding: 5px;
+  border-radius: 40%;
+}
+
+.utility-menu .bi-music-note {
+  background-color: purple;
+}
+
+.utility-menu .bi-heart {
+  background-color: red;
+}
+
+.utility-menu .bi-cloud-arrow-up {
+  background-color: blue;
+}
+
+
+
+

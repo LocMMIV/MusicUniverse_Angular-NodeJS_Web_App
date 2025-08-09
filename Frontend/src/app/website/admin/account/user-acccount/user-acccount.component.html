@@ -1,0 +1,69 @@
+<div class="container-fluid">
+    <!-- Phân trang -->
+    <div class="pagination">
+        <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">
+        <i class="bi bi-caret-left"></i>
+        </button>
+    
+        <ng-container *ngFor="let page of visiblePages">
+        <button
+            *ngIf="page !== '...'; else dots"
+            [class.active]="page === currentPage"
+            (click)="changePage(page)">
+            {{ page }}
+        </button>
+        <ng-template #dots>
+            <span>...</span>
+        </ng-template>
+        </ng-container>
+    
+        <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">
+        <i class="bi bi-caret-right"></i>
+        </button>
+    </div>
+    
+    <div class="user-account-table-container">
+        <table class="user-account-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Họ tên</th>
+                    <th>Tên tài khoản</th>
+                    <th>Email</th>
+                    <th>Trạng thái</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let useraccount of paginatedData; let i = index">
+                    <td>{{ useraccount.id }}</td>
+                    <td>{{ useraccount.fullName }}</td>
+                    <td>{{ useraccount.userName }}</td>
+                    <td>{{ useraccount.email }}</td>
+                    <td [ngClass]="{'locked-status': true, 'locked': useraccount.status === 'Đã khóa'}">
+                        {{ useraccount.status || 'Không khóa' }}
+                    </td>
+                    <td>
+                        <button class="delete-btn" (click)="openConfirmDeleteDialog(i)">Xóa</button>
+                        <div *ngIf="ConfirmdeleteService.getSelectedIndex() !== null" class="confirm-delete-dialog">
+                            <div class="confirm-delete-dialog-content">
+                                <h3>Bạn có chắc chắn muốn xóa?</h3>
+                                <br/>
+                                <h5>
+                                    <span>ID:</span> {{ paginatedData[ConfirmdeleteService.getSelectedIndex()!]?.id }} <span style="color: yellow;">-- </span>
+                                    <span>Email:</span> {{ paginatedData[ConfirmdeleteService.getSelectedIndex()!]?.email }}
+                                </h5>
+                                <br/>
+                                <button (click)="deleteConfirmDeleteDialog('accepted')" class="confirm-btn">Xác nhận</button>
+                                <button (click)="closeConfirmDeleteDialog()" class="cancel-btn">Hủy</button>
+                            </div>
+                        </div>
+                        <button class="lock-btn" (click)="toggleLockStatus(useraccount)">
+                        {{ useraccount.status === 'Đã khóa' ? 'Mở khóa' : 'Khóa' }}
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

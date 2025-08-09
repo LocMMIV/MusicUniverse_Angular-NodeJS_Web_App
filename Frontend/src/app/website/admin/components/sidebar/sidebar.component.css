@@ -1,0 +1,95 @@
+.logo img {
+    width: 70%;
+    display: block;
+    margin: 0 auto;
+    padding: 20px 10px 20px 10px;
+}
+
+.menu {
+  list-style-type: none;
+  position: relative;
+  width: 95%;
+}
+
+.menu .main-menu {
+  margin: 10px;
+}
+
+.menu li a {
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: 500;
+  padding: 10px 20px;
+  color: gray;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: .1s linear;
+}
+
+.menu li a:hover {
+  background: #21222D;
+}
+
+.menu li a.active {
+  color: black;
+  background: skyblue;
+}
+
+.menu .bi {
+  display: flex;
+  margin-right: 20px;
+}
+
+.menu .dropdown-content {
+  list-style: none;
+  display: block;
+  position: relative;
+  padding-left: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.menu .dropdown-content.show {
+  max-height: 200px;
+  opacity: 1;
+  visibility: visible;
+}
+
+.menu .dropdown-content li {
+  padding: 10px 30px 0px 30px;
+  text-align: left;
+}
+
+.menu .dropdown-content li a {
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 500;
+  color: gray;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: .1s linear;
+}
+
+.menu .dropdown-content li a:hover {
+  background: #21222D;
+}
+
+.menu .main-menu.active > a {
+  color: black;
+  background: skyblue;
+}
+
+.menu .main-menu.active > a:hover {
+  background: skyblue;
+}
+
+.menu .dropdown-content li a.active {
+  color: white;
+  background: #21222D;
+  border-left: 4px solid deepskyblue;
+}

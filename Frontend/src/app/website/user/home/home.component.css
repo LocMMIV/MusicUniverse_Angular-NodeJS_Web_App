@@ -1,0 +1,347 @@
+.container-fluid {
+    padding: 50px;
+}
+
+/* ==== GỢI Ý & MỚI PHÁT HÀNH ==== */
+
+.suggest-text,
+.new-text {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+h3 {
+    font-size: 25px;
+    font-weight: 700;
+}
+
+.refresh-btn {
+    display: inline-flex;
+    color: black;
+    align-items: center;
+    padding: 5px 15px;
+    background-color: skyblue;
+    border: none;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.refresh-btn i {
+    font-weight: 500;
+    margin-right: 5px;
+}
+
+.refresh-btn:hover {
+    background-color: deepskyblue;
+}
+
+.suggest-item,
+.new-item {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 20px;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.column {
+    display: flex;
+    width: 95%;
+    align-items: center;
+    gap: 10px;
+    text-align: left;
+    padding: 8px;
+    margin: 2px 0px;
+    position: relative;
+}
+
+.column:hover,
+.column.active {
+    background-color: #21222D;
+    transition: background-color 0.3s ease, border 0.3s ease;
+}
+
+img {
+    display: block;
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+}
+
+.column:hover img,
+.column.active img {
+    filter: brightness(50%);
+}
+
+.play-icon,
+.bi-heart,
+.bi-heart-fill {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 30px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.play-icon {
+    left: 10%;
+}
+
+.bi-heart,
+.bi-heart-fill {
+    left: 90%;
+    font-size: 15px;
+    color: red;
+}
+
+.bi-heart:hover,
+.bi-heart-fill:hover {
+    background-color: #171821;
+    border-radius: 50%;
+    padding: 6px 10px;
+}
+
+.column:hover .play-icon,
+.column.active .play-icon,
+.column:hover .bi-heart,
+.column:hover .bi-heart-fill,
+.column.active .bi-heart,
+.column.active .bi-heart-fill {
+    opacity: 1;
+}
+
+.title h5,
+.title p {
+    margin: 0;
+    font-size: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+
+.title p {
+    color: gray;
+    font-size: 14px;
+}
+
+.new .new-text a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 500;
+    color: gray;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.new .new-text a:hover {
+    color: deepskyblue;
+}
+
+.new .new-text a i {
+    margin-left: 5px;
+    font-weight: 500;
+    font-size: 18px;
+}
+
+.new .new-text a:hover i {
+    transform: translateX(5px);
+}
+
+/* ==== BIỂU ĐỒ ==== */
+
+.chart {
+    display: flex;
+    background-color: #21222D;
+    width: 100%;
+}
+
+.chart .left {
+    flex: 0 0 40%;
+    padding: 10px 30px;
+    box-sizing: border-box;
+}
+
+.chart .left a {
+    font-size: 30px;
+    font-weight: bold;
+    background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+    background-size: 400%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: rainbow 10s infinite;
+}
+
+@keyframes rainbow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.chart .left a i {
+    margin-left: 10px;
+    font-size: 25px;
+    background: none;
+    -webkit-background-clip: none;
+    -webkit-text-fill-color: white;
+}
+
+.chart .right {
+    flex: 0 0 60%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.chart-container {
+    width: 100%;
+    height: 300px;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+/* ==== TOP SONG ==== */
+
+.top-song {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.top-song:hover,
+.top-song.active {
+    background-color: rgba(255, 255, 255, 0.164);
+}
+
+.top-song-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 4px;
+    margin-right: 12px;
+    object-fit: cover;
+    transition: filter 0.3s ease;
+}
+
+.top-song:hover .top-song-image,
+.top-song.active .top-song-image {
+    filter: brightness(50%);
+}
+
+.top-song .play-icon {
+    left: 80px;
+}
+
+.top-song:hover .play-icon,
+.top-song.active .play-icon {
+    opacity: 1;
+}
+
+.rank-number {
+    font-size: 30px;
+    font-weight: bold;
+    width: 25px;
+    text-align: center;
+    margin-right: 12px;
+}
+
+.top-1 .rank-number { color: #4a90e2; }
+.top-2 .rank-number { color: #50e3c2; }
+.top-3 .rank-number { color: #f55c7a; }
+
+.song-info {
+    flex: 1;
+    overflow: hidden;
+}
+
+.song-info .song-name,
+.song-info .artist {
+    font-weight: bold;
+    font-size: 15px;
+    width: 80%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.artist {
+    font-size: 13px;
+    color: gray;
+}
+
+.view {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.see-more-btn {
+    margin: 10px;
+    padding: 6px 20px;
+    background: transparent;
+    border: 1px solid #fff;
+    border-radius: 20px;
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.see-more-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ==== FOOTER ==== */
+
+.footer-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.footer-column {
+    box-sizing: border-box;
+    padding: 10px;
+}
+
+.footer-column:first-child {
+    flex: 1;
+}
+
+.footer-column:nth-child(2),
+.footer-column:nth-child(3) {
+    flex: 2;
+}
+
+.footer-container .logo {
+    width: 200px;
+    height: auto;
+    display: block;
+}
+
+.footer-container span {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.footer-container p {
+    font-size: 18px;
+    font-weight: 500;
+    color: gray;
+    margin: 6px 0;
+    line-height: 1.5;
+}

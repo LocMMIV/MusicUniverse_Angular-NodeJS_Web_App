@@ -1,0 +1,132 @@
+.container-fluid {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+.search-container {
+    position: relative;
+    width: 50%;
+    padding: 0px 15px;
+    background-color: #2B2B36;
+}
+
+.search-container .bi {
+    color: white;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.search-container input {
+    width: 90%;
+    cursor: pointer;
+    background: none;
+    border: none;
+    outline: none;
+    padding: 0px 10px;
+    color: white;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 15px;
+}
+
+.account {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.account.clicked {
+    background: none;
+}
+
+.account .bi.bi-person-circle {
+    font-size: 40px;
+    margin: 0px 20px;
+    color: white;
+}
+
+.account i.bi-chevron-down.arrow {
+    color: white;
+    transition: transform 0.3s ease;
+}
+
+.account.clicked i.bi-chevron-down.arrow {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    background-color: #21222D;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    border-radius: 0;
+    margin-top: 10px;
+    padding: 5px 0;
+    top: 100%;
+    left: -80%;
+    opacity: 0;
+    transform: translateY(-20px) scaleX(0);
+    transform-origin: top right;
+    animation: dropdownAnimation 0.3s ease-out forwards;
+}
+
+@keyframes dropdownAnimation {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px) scaleX(0);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scaleX(1);
+    }
+}
+
+.dropdown-menu.show {
+    display: block;
+    opacity: 1;
+}
+
+.dropdown-item {
+    padding: 10px 20px;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    color: #4F5057;
+    display: block;
+    cursor: pointer;
+}
+
+.dropdown-item i {
+    margin-right: 10px;
+    font-weight: 500;
+}
+
+.dropdown-item:hover {
+    background-color: #2d2e3d;
+    color: white;
+}
+
+.dropdown-item.logout:hover {
+    background-color: #2d2e3d;
+    color: red;
+}
+
+.clock-container {
+    display: flex;
+    align-items: center;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 30px;
+    width: 250px;
+    gap: 15px;
+}
+
+.clock-container button {
+    font-size: 20px;
+    border: none;
+    cursor: pointer;
+    background: none;
+    color: white;
+}

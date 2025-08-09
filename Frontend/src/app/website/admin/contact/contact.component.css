@@ -1,0 +1,237 @@
+.container-fluid {
+    width: 100%;
+    height: 90vh;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.pagination {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin: 5px 0px;
+    gap: 5px;
+}
+
+.pagination button {
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: bold;
+    border: 1px solid #21222D;
+    border-radius: 0;
+    background-color: #21222D;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.pagination button:hover {
+    background-color: black;
+    border-color: black;
+}
+
+.pagination button.active {
+    background-color: #50d3ff48;
+    color: white;
+    border-color: #50d3ff;
+}
+
+.pagination button:disabled {
+    background-color: #21222D;
+    color: gray;
+    border-color: #21222D;
+    cursor: not-allowed;
+}
+
+.pagination span {
+    color: white;
+}
+
+.contact-table-container .pagination {
+    margin-top: auto;
+}
+
+.contact-table-container {
+    width: 100%;
+    margin: 20px 0px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.contact-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: white;
+    text-align: center;
+}
+
+.contact-table th,
+.contact-table td {
+    padding: 10px 15px;
+    border: 1px solid #44475e;
+    vertical-align: middle;
+}
+
+.contact-table thead tr {
+    background-color: black;
+    color: white;
+}
+
+.contact-table tbody tr:nth-child(even) {
+    background-color: #21222D;
+}
+
+/* Cột ID */
+.contact-table th:nth-child(1),
+.contact-table td:nth-child(1) { width: 5%; }
+/* Cột Họ tên */
+.contact-table th:nth-child(2),
+.contact-table td:nth-child(2) { width: 15%; }
+/* Cột Tên tài khoản */
+.contact-table th:nth-child(3),
+.contact-table td:nth-child(3) { width: 13%; }
+/* Cột Email */
+.contact-table th:nth-child(4),
+.contact-table td:nth-child(4) { width: 15%; }
+/* Cột Yêu cầu */
+.contact-table th:nth-child(5),
+.contact-table td:nth-child(5) { width: 15%; }
+/* Cột Trạng thái */
+.contact-table th:nth-child(6),
+.contact-table td:nth-child(6) { width: 10%; }
+/* Thao tác */
+.contact-table th:nth-child(7),
+.contact-table td:nth-child(7) { width: 12%; }
+
+.delete-btn,
+.resolve-btn,
+.detail-btn {
+    padding: 5px 10px;
+    cursor: pointer;
+    color: white;
+    font-size: 14px;
+    margin: 2.5px;
+}
+
+.delete-btn {
+    border: 1px solid #dc3545;
+    background-color: #dc354644;
+}
+
+.resolve-btn {
+    border: 1px solid #adb817;
+    background-color: #adb8173a;
+}
+
+.detail-btn {
+    border: 1px solid #17b824;
+    background-color: #17b82442;
+}
+
+.delete-btn:hover {
+    border: 1px solid #c82333;
+    background-color: #c8233344;
+}
+
+.resolve-btn:hover {
+    border: 1px solid #c8c523;
+    background-color: #c8c52328;
+}
+
+.detail-btn:hover {
+    border: 1px solid #179613;
+    background-color: #17961338;
+}
+
+.resolved-status {
+    color: red;
+    font-weight: 500;
+}
+
+.resolved-status.resolved {
+    color: lime;
+    font-weight: 500;
+}
+
+.confirm-delete-dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    z-index: 10000;
+}
+
+.confirm-delete-dialog-content {
+    background: #171821;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 30%;
+    text-align: center;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.confirm-delete-dialog-content h3 {
+    font-size: 25px;
+    font-weight: 500;
+}
+.confirm-delete-dialog-content h5 {
+    font-size: 20px;
+    font-weight: 400;
+}
+
+.confirm-delete-dialog-content h5 span {
+    color: deepskyblue;
+    font-weight: 500;
+}
+
+.confirm-btn, .cancel-btn {
+    padding: 7px 13px;
+    cursor: pointer;
+    margin: 0 5px;
+    font-size: 15px;
+    font-weight: bold;
+    text-transform: uppercase;
+    background-color: transparent;
+}
+
+.confirm-btn {
+    border: 2px solid limegreen;
+    color: limegreen;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.confirm-btn:hover {
+    background-color: limegreen;
+    color: white;
+}
+
+.cancel-btn {
+    border: 2px solid crimson;
+    color: crimson;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.cancel-btn:hover {
+    background-color: crimson;
+    color: white;
+}

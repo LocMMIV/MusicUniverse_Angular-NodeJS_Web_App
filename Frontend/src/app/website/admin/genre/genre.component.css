@@ -1,0 +1,346 @@
+.container-fluid {
+    width: 100%;
+    height: 90vh;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.genre-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.genre-header button {
+    background-color: skyblue;
+    color: black;
+    font-weight: 500;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.genre-header button:hover {
+    background-color: deepskyblue;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 5px 0px;
+    gap: 5px;
+}
+
+.pagination button {
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: bold;
+    border: 1px solid #21222D;
+    border-radius: 0;
+    background-color: #21222D;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.pagination button:hover {
+    background-color: black;
+    border-color: black;
+}
+
+.pagination button.active {
+    background-color: #50d3ff48;
+    color: white;
+    border-color: #50d3ff;
+}
+
+.pagination button:disabled {
+    background-color: #21222D;
+    color: gray;
+    border-color: #21222D;
+    cursor: not-allowed;
+}
+
+.pagination span {
+    color: white;
+}
+
+.genre-table-container .pagination {
+    margin-top: auto;
+}
+
+.genre-table-container {
+    width: 100%;
+    margin: 20px 0px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.genre-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: white;
+    text-align: center;
+}
+
+.genre-table th,
+.genre-table td {
+    padding: 10px 15px;
+    border: 1px solid #44475e;
+    vertical-align: middle;
+}
+
+.genre-table thead tr {
+    background-color: black;
+    color: white;
+}
+
+.genre-table tbody tr:nth-child(even) {
+    background-color: #21222D;
+}
+
+/* Cột ID */
+.genre-table th:nth-child(1),
+.genre-table td:nth-child(1) { width: 30%; }
+/* Cột Tên chủ đề & thể loại */
+.genre-table th:nth-child(2),
+.genre-table td:nth-child(2) { width: 40%; }
+/* Cột Thao tác */
+.genre-table th:nth-child(3),
+.genre-table td:nth-child(3) { width: 30%; }
+
+.edit-btn,
+.delete-btn {
+    padding: 5px 10px;
+    cursor: pointer;
+    color: white;
+    font-size: 14px;
+    margin: 2.5px;
+}
+
+.edit-btn {
+    border: 1px solid #17a2b8;
+    background-color: #17a3b848;
+}
+
+.edit-btn:hover {
+    border: 1px solid #138496;
+    background-color: #1384964b;
+}
+
+.delete-btn {
+    border: 1px solid #dc3545;
+    background-color: #dc354644;
+}
+
+.delete-btn:hover {
+    border: 1px solid #c82333;
+    background-color: #c8233344;
+}
+
+.add-genre-form {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    z-index: 10000;
+}
+
+.add-genre-form form {
+    background: #171821;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 40%;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.add-genre-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.add-genre-header h3 {
+    margin: 0;
+    font-size: 25px;
+    color: white;
+}
+
+.add-genre-header .close-button {
+    font-size: 25px;
+    border: none;
+    cursor: pointer;
+    background: none;
+}
+
+.add-genre-header .close-button:hover {
+    color: red;
+    background: none;
+}
+
+.add-genre-form .error-message {
+    color: red;
+    font-size: 14px;
+    font-weight: 500;
+    padding-left: 10px;
+}
+
+.add-genre-form .warning-message {
+    color: yellow;
+    font-size: 14px;
+    font-weight: 500;
+    padding-left: 10px;
+}
+
+
+.add-genre-form .form-group {
+    flex: 1;
+}
+
+.add-genre-form label {
+    color: white;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.add-genre-form input[type="text"] {
+    background-color: #21222D;
+    color: white;
+    border: none;
+    padding: 12px 15px;
+    margin: 0;
+    width: 100%;
+    background-clip: padding-box;
+}
+
+.add-genre-form input[type="text"]:hover {
+    background-color: #1A1B24;
+    outline: none;
+}
+
+.add-genre-form input[type="text"]:focus {
+    background-color: #1A1B24;
+    outline: none;
+}
+
+.add-genre-form button {
+    border: 2px solid #00c3ff;
+    background-color: transparent;
+    color: #00c3ff;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 10px 30px;
+    margin: 15px 0px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.add-genre-form button:hover {
+    background-color: #00c3ff;
+    color: white;
+}
+
+.confirm-delete-dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    z-index: 10000;
+}
+
+.confirm-delete-dialog-content {
+    background: #171821;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 30%;
+    text-align: center;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.confirm-delete-dialog-content h3 {
+    font-size: 25px;
+    font-weight: 500;
+}
+.confirm-delete-dialog-content h5 {
+    font-size: 20px;
+    font-weight: 400;
+}
+
+.confirm-delete-dialog-content h5 span {
+    color: deepskyblue;
+    font-weight: 500;
+}
+
+.confirm-btn, .cancel-btn {
+    padding: 7px 13px;
+    cursor: pointer;
+    margin: 0 5px;
+    font-size: 15px;
+    font-weight: bold;
+    text-transform: uppercase;
+    background-color: transparent;
+}
+
+.confirm-btn {
+    border: 2px solid limegreen;
+    color: limegreen;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.confirm-btn:hover {
+    background-color: limegreen;
+    color: white;
+}
+
+.cancel-btn {
+    border: 2px solid crimson;
+    color: crimson;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.cancel-btn:hover {
+    background-color: crimson;
+    color: white;
+}
