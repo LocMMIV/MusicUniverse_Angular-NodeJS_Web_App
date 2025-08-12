@@ -1,15 +1,17 @@
 import { Router } from "express";
+import { requireUser } from "../middlewares/auth.js";
 import {
-    listFavoritesByUser,
-    addFavorite,
+    listMyFavorites,
+    toggleFavorite,
+    isFavorite,
     removeFavorite,
 } from "../controller/user/favorites.controller.js";
 
 const router = Router();
 
-// Yêu thích
-router.get("/:userId", listFavoritesByUser);   
-router.post("/", addFavorite);       
-router.delete("/:userId/:songId", removeFavorite); 
+router.get("/", requireUser, listMyFavorites);
+router.post("/:songId", requireUser, toggleFavorite);
+router.get("/:songId", requireUser, isFavorite);
+router.delete("/:songId", requireUser, removeFavorite);
 
 export default router;

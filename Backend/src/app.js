@@ -17,8 +17,10 @@ app.use(morgan('dev'));
 
 // Serve ảnh/nhạc upload
 app.use("/uploads", express.static("uploads"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-//Health check
+// Health check
 app.get("/health",  async (req, res) => {
   try {
     const [rows] = await pool.query("SELECT 1 AS ok");

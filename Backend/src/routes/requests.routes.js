@@ -1,21 +1,30 @@
 import { Router } from "express";
+import { requireUser, requireAdmin } from "../middlewares/auth.js";
+
+// user controllers
 import {
-    createRequest,
-    listRequests,
-    getRequestById,
-    confirmRequest,
-    resolveRequest,
-    deleteRequest,
+  createSupportRequest,
+  listMySupportRequests,
+} from "../controller/user/requests.controller.js";
+
+// admin controllers
+import {
+  adminListSupportRequests,
+  adminGetSupportRequest,
+  adminResolveSupportRequest,
+  adminDeleteSupportRequest,
 } from "../controller/admin/requests.controller.js";
 
 const router = Router();
 
-// CRUD liên hệ/hỗ trợ
-router.post("/", createRequest);                 
-router.get("/", listRequests);              
-router.get("/:id", getRequestById);           
-router.put("/:id/confirm", confirmRequest);  
-router.put("/:id/resolve", resolveRequest);    
-router.delete("/:id", deleteRequest);          
+/* USER */
+router.post("/", requireUser, createSupportRequest);
+router.get("/my", requireUser, listMySupportRequests);
+
+/* ADMIN */
+router.get("/", requireUser, requireAdmin, adminListSupportRequests);   
+router.get("/:id", requireUser, requireAdmin, adminGetSupportRequest);
+router.patch("/:id/resolve", requireUser, requireAdmin, adminResolveSupportRequest);
+router.delete("/:id", requireUser, requireAdmin, adminDeleteSupportRequest);
 
 export default router;

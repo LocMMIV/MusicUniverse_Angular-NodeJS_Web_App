@@ -1,23 +1,18 @@
+// src/routes/users.routes.js (admin scope)
 import { Router } from "express";
+import { jwtRequireUser, jwtRequireAdmin } from "../middlewares/authJwt.js";
 import {
-    listUsers,
-    getUserById,
-    createUser,
-    updateUser,
-    deleteUser,
-    lockUser,
-    unlockUser,
+  adminListUsers,
+  adminSetLockUser,
+  adminGetUser,
+  adminSetRole,
 } from "../controller/admin/users.controller.js";
 
 const router = Router();
 
-// Admin quản lý user
-router.get("/", listUsers);                  
-router.get("/:id", getUserById);             
-router.post("/", createUser);             
-router.put("/:id", updateUser);          
-router.delete("/:id", deleteUser);           
-router.put("/:id/lock", lockUser);           
-router.put("/:id/unlock", unlockUser);      
+router.get("/", jwtRequireUser, jwtRequireAdmin, adminListUsers);
+router.get("/:id", jwtRequireUser, jwtRequireAdmin, adminGetUser);
+router.patch("/:id/lock", jwtRequireUser, jwtRequireAdmin, adminSetLockUser);
+router.patch("/:id/role", jwtRequireUser, jwtRequireAdmin, adminSetRole);
 
 export default router;
