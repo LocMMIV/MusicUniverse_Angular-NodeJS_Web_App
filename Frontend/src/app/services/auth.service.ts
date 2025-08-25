@@ -1,62 +1,46 @@
 import { Injectable } from '@angular/core';
+import { ApiService } from './api.service';
+import { TokenStorage } from '../auth/token.storage';
+import { tap, map } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root',
-})
+export interface LoginResponse {
+  token: string;
+  user: { id: number; name: string; account_name: string; email: string; role: 'user'|'admin' };
+}
+
+@Injectable({ providedIn: 'root' })
 export class AuthService {
-  private isLoggedIn = false;
-  private users: any[] = []; // Giả lập danh sách người dùng (dùng cho kiểm tra trùng tài khoản trong đăng ký)
+  constructor(private api: ApiService, private tokens: TokenStorage) {}
 
-  constructor() {}
-
-  // Đăng nhập
-  login(accountName: string, password: string): boolean {
-    // Kiểm tra tên tài khoản và mật khẩu giả lập
-    const storedUser = JSON.parse(localStorage.getItem('user') as string);
-
-    if (storedUser && storedUser.email === accountName && storedUser.password === password) {
-      this.isLoggedIn = true;
-      return true;
-    }
-    return false;
+  // Đăng nhập: FE chỉ có accountName, ta gửi cả email và account_name (BE dùng cái nào cũng ok)
+  login(accountName: string, password: string) {
+    const body = { email: accountName, account_name: accountName, password };
+    return this.api.post<LoginResponse>('/auth/login', body).pipe(
+      tap(res => { this.tokens.setToken(res.token); this.tokens.setUser(res.user); }),
+      map(() => true)
+    );
   }
 
-  // Đăng xuất
-  logout(): void {
-    this.isLoggedIn = false;
-    localStorage.clear();
+  // Đăng ký: BE yêu cầu account_name (snake_case)
+  register(payload: { name: string; email: string; accountName: string; password: string }) {
+    const body = {
+      name: payload.name,
+      email: payload.email,
+      account_name: payload.accountName, // map đúng BE
+      password: payload.password,
+    };
+    return this.api.post<LoginResponse>('/auth/register', body).pipe(
+      tap(res => { this.tokens.setToken(res.token); this.tokens.setUser(res.user); }),
+      map(() => true)
+    );
   }
 
-  // Kiểm tra xem người dùng đã đăng nhập chưa
-  isAuthenticated(): boolean {
-    return !!localStorage.getItem('user');
-  }
+  me() { return this.api.get<LoginResponse['user']>('/auth/me'); }
 
-  // Đăng ký người dùng mới
-  register(user: { name: string, email: string, accountName: string, password: string }): boolean {
-    // Kiểm tra trùng tài khoản
-    const isAccountDuplicate = this.users.some(u => u.accountName === user.accountName);
-    if (isAccountDuplicate) {
-      return false; // Trả về false nếu tài khoản đã tồn tại
-    }
+  logout() { this.tokens.clearAll(); }
 
-    // Lưu người dùng mới vào danh sách và localStorage
-    this.users.push({
-      name: user.name,
-      email: user.email,
-      accountName: user.accountName,
-      password: user.password,
-    });
-    localStorage.setItem('user', JSON.stringify({ 
-      email: user.email, 
-      password: user.password,
-      role: 'user', 
-    }));
-    return true;
-  }
-
-  // Kiểm tra trùng tài khoản khi đăng ký
-  checkAccountDuplicate(accountName: string): boolean {
-    return this.users.some(u => u.accountName === accountName);
-  }
+  get user() { return this.tokens.getUser<LoginResponse['user']>(); }
+  get token() { return this.tokens.getToken(); }
+  get isLoggedIn() { return !!this.token; }
+  get isAdmin() { return this.user?.role === 'admin'; }
 }

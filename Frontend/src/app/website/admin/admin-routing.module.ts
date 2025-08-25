@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { adminGuard } from '../../guards/admin.guard';
 
 import { AdminComponent } from './admin.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -14,7 +15,9 @@ import { DetailSongComponent } from './song/detail-song/detail-song.component';
 
 const routes: Routes = [
   {
-      path: '', component: AdminComponent, children: [
+      path: '',
+      canActivate: [adminGuard],
+      component: AdminComponent, children: [
         { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
         { path: 'dashboard', component: DashboardComponent }, 
         { path: 'song', component: SongComponent },

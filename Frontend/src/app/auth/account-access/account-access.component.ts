@@ -9,18 +9,21 @@ import { NotificationService } from '../../services/notification.service';
   styleUrls: ['./account-access.component.css']
 })
 export class AccountAccessComponent implements AfterViewInit {
-  email: string = '';
-  accountName: string = '';
-  password: string = '';
-  confirmPassword: string = '';
-  name: string = '';
-  isDuplicateAccount: boolean = false;
+  email = '';
+  accountName = '';
+  password = '';
+  confirmPassword = '';
+  name = '';
+
+  @ViewChild('container') container!: ElementRef<HTMLDivElement>;
 
   constructor(
-    private authService: AuthService,
+    private auth: AuthService,
     private notificationService: NotificationService,
     private router: Router
   ) {}
+
+  ngAfterViewInit(): void { }
 
   // Đăng nhập
   async login() {
@@ -28,72 +31,59 @@ export class AccountAccessComponent implements AfterViewInit {
       this.notificationService.showMessage('Vui lòng nhập đủ thông tin', 'error');
       return;
     }
-
-    const isLoginSuccessful = await this.authService.login(this.accountName, this.password);
-    if (isLoginSuccessful) {
-      this.notificationService.showMessage('Đăng nhập thành công!', 'success');
-      const user = JSON.parse(localStorage.getItem('user') as string);
-      if (user?.role === 'admin') {
-        this.router.navigate(['/admin']);
-      } else {
-        this.router.navigate(['/user']);
+    try {
+      const ok = await this.auth.login(this.accountName, this.password).toPromise();
+      if (ok) {
+        this.notificationService.showMessage('Đăng nhập thành công!', 'success');
+        // điều hướng theo role
+        if (this.auth.isAdmin) this.router.navigateByUrl('/admin');
+        else this.router.navigateByUrl('/user');
       }
-    } else {
-      this.notificationService.showMessage('Tên đăng nhập hoặc mật khẩu không đúng!', 'error');
+    } catch (e: any) {
+      const msg = e?.error?.message || 'Đăng nhập thất bại';
+      this.notificationService.showMessage(msg, 'error');
     }
   }
 
-  // Đăng ký người dùng mới
+  // Đăng ký
   async register() {
     if (!this.name || !this.email || !this.accountName || !this.password || !this.confirmPassword) {
-      this.notificationService.showMessage('Vui lòng nhập đầy đủ thông tin', 'error');
+      this.notificationService.showMessage('Vui lòng nhập đủ thông tin', 'error');
       return;
     }
-
     if (this.password !== this.confirmPassword) {
-      this.notificationService.showMessage('Mật khẩu không khớp!', 'error');
+      this.notificationService.showMessage('Mật khẩu xác nhận không khớp', 'error');
       return;
     }
+    try {
+      const ok = await this.auth.register({
+        name: this.name,
+        email: this.email,
+        accountName: this.accountName, // 👈 FE camelCase, service map sang account_name
+        password: this.password
+      }).toPromise();
 
-    if (this.isDuplicateAccount) {
-      this.notificationService.showMessage('Tên tài khoản đã tồn tại!', 'error');
-      return;
-    }
-
-    const user = {
-      name: this.name,
-      accountName: this.accountName,
-      email: this.email,
-      password: this.password,
-    };
-
-    const isRegisterSuccessful = await this.authService.register(user);
-    if (isRegisterSuccessful) {
-      this.notificationService.showMessage('Đăng ký thành công!', 'success');
-    } else {
-      this.notificationService.showMessage('Đăng ký thất bại!', 'error');
+      if (ok) {
+        this.notificationService.showMessage('Đăng ký thành công!', 'success');
+        if (this.auth.isAdmin) this.router.navigateByUrl('/admin');
+        else this.router.navigateByUrl('/user');
+      }
+    } catch (e: any) {
+      const msg = e?.error?.message || 'Đăng ký thất bại';
+      this.notificationService.showMessage(msg, 'error');
     }
   }
 
-  @ViewChild('container') container!: ElementRef;
-
-  ngAfterViewInit(): void {
-    console.log(this.container);
-  }
-
-  // Chuyển đến màn hình đăng ký
   onSignUpClick(): void {
     this.container.nativeElement.classList.add('right-panel-active');
     this.resetForm();
   }
 
-  // Chuyển đến màn hình đăng nhập
   onSignInClick(): void {
     this.container.nativeElement.classList.remove('right-panel-active');
     this.resetForm();
   }
 
-  // Reset form
   resetForm(): void {
     this.name = '';
     this.email = '';
