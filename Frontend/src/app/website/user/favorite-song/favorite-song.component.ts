@@ -10,7 +10,7 @@ import { environment } from '../../../../environments/environment';
   styleUrls: ['./favorite-song.component.css']
 })
 export class FavoriteSongComponent implements OnInit {
-  favorite: Array<any> = [];  // map về field cũ để giữ nguyên HTML
+  favorite: Array<any> = [];
   likedSongs: any[] = [];
   currentSong: any = null;
   isPlaying: boolean = false;
@@ -23,13 +23,19 @@ export class FavoriteSongComponent implements OnInit {
 
   async ngOnInit() {
     await this.loadFavorites();
-
     this.musicplayerService.currentSong$.subscribe(song => this.currentSong = song);
     this.musicplayerService.isPlaying$.subscribe(state => this.isPlaying = state);
   }
 
+  private shuffleInPlace<T>(a: T[]) {
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+  }
+
   private async loadFavorites() {
-    const res = await this.favSvc.myList().toPromise();
+    const res: any = await this.favSvc.myList().toPromise();
     const rows = res?.data || [];
     this.favorite = rows.map((s: any) => ({
       id: s.id,
@@ -40,6 +46,9 @@ export class FavoriteSongComponent implements OnInit {
       audioUrl: s.audio_url ? environment.assetsUrl + s.audio_url : '',
       duration: ''
     }));
+
+    // === Random hoá danh sách ===
+    this.shuffleInPlace(this.favorite);
 
     this.favorite.forEach(item => {
       if (!item.audioUrl) return;
@@ -68,12 +77,11 @@ export class FavoriteSongComponent implements OnInit {
   }
 
   playSong(song: any) {
-    if (this.currentSong === song) {
+    const queue = this.favorite;
+    if (this.currentSong?.id === song.id) {
       this.musicplayerService.togglePlayPause();
     } else {
-      this.musicplayerService.setCurrentSong(song);
-      const audioPlayer = document.querySelector('audio') as HTMLAudioElement;
-      if (audioPlayer) { audioPlayer.src = song.audioUrl; audioPlayer.play(); }
+      this.musicplayerService.playFrom(queue as any[], song as any);
     }
   }
 

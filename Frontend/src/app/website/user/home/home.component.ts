@@ -73,14 +73,18 @@ export class HomeComponent implements OnInit {
       isLiked: false
     }));
 
-    const newest9 = this.allLatest.slice(0, 9);
+    // === Random hoá danh sách ===
+    const shuffled = this.shuffle([...this.allLatest]);
+
+    const newest9 = shuffled.slice(0, 9);
     this.newRows = this.chunkArray(newest9, this.chunkSize);
 
     this.refreshSuggest();
   }
 
   refreshSuggest() {
-    const picked = this.pickRandom(this.allLatest, 9);
+    const shuffled = this.shuffle([...this.allLatest]);
+    const picked = shuffled.slice(0, 9);
     this.suggestRows = this.chunkArray(picked, this.chunkSize);
   }
 
@@ -94,8 +98,12 @@ export class HomeComponent implements OnInit {
   }
 
   playSong(song: HomeSong) {
+    const queue: HomeSong[] = [
+      ...this.flatten(this.suggestRows),
+      ...this.flatten(this.newRows)
+    ];
     if (this.currentSong?.id === song.id) this.music.togglePlayPause();
-    else this.music.setCurrentSong(song as any);
+    else this.music.playFrom(queue as any[], song as any);
   }
 
   toggleLike(type: 'suggest' | 'new', rowIndex: number, colIndex: number) {
@@ -133,14 +141,15 @@ export class HomeComponent implements OnInit {
     for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
     return out.slice(0, 3);
   }
-  private pickRandom<T>(arr: T[], n: number): T[] {
-    if (arr.length <= n) return [...arr];
-    const a = [...arr];
-    for (let i = a.length - 1; i > 0; i--) {
+  private flatten<T>(rows: T[][]): T[] {
+    return rows.reduce((acc, r) => acc.concat(r), [] as T[]);
+  }
+  private shuffle<T>(arr: T[]): T[] {
+    for (let i = arr.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
+      [arr[i], arr[j]] = [arr[j], arr[i]];
     }
-    return a.slice(0, n);
+    return arr;
   }
 
   formatViews(view: number): string {

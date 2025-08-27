@@ -98,7 +98,7 @@ tr.active .play-icon {
 .play-icon {
     position: absolute;
     top: 50%;
-    left: 5%;
+    left: 6%;
     font-size: 30px;
     transform: translate(-50%, -50%);
     display: none;

@@ -7,6 +7,7 @@ import { FavoritesService } from '../../../services/favorites.service';
 import { AuthService } from '../../../services/auth.service';
 import { GenresService } from '../../../services/genres.service';
 import { environment } from '../../../../environments/environment';
+import { ActivatedRoute, Router } from '@angular/router';
 
 type SongVM = {
   id: number;
@@ -14,7 +15,7 @@ type SongVM = {
   songName: string;
   artist: string;
   genre: string;
-  genreId?: number;
+  genreId?: number | null;
   isLiked: boolean;
   audioUrl: string;
   duration: string;
@@ -29,12 +30,13 @@ export class ListSongComponent implements OnInit {
   list: SongVM[] = [];
   likedSongs: SongVM[] = [];
 
-  // ===== Thể loại =====
   genres: Array<{id:number; name:string}> = [];
   selectedGenreId: number | null = null;
 
   currentSong: SongVM | null = null;
   isPlaying = false;
+
+  searchQuery = '';
 
   constructor(
     private notificationService: NotificationService,
@@ -42,26 +44,32 @@ export class ListSongComponent implements OnInit {
     private songsSvc: SongsService,
     private favSvc: FavoritesService,
     private authSvc: AuthService,
-    private genresSvc: GenresService
+    private genresSvc: GenresService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   async ngOnInit() {
-    await this.loadSongs();
+    // theo dõi q trên url
+    this.route.queryParamMap.subscribe(async (params) => {
+      this.searchQuery = (params.get('q') || '').trim();
+      await this.loadSongs(this.searchQuery);
+      if (this.authSvc.isLoggedIn) await this.markLikedFromServer();
+    });
 
-    // tải thể loại từ BE
+    // tải thể loại
     const gr: any = await firstValueFrom(this.genresSvc.list());
     this.genres = gr?.data ?? [];
-
-    if (this.authSvc.isLoggedIn) {
-      await this.markLikedFromServer();
-    }
 
     this.musicplayerService.currentSong$.subscribe(song => (this.currentSong = song as any));
     this.musicplayerService.isPlaying$.subscribe(state => (this.isPlaying = state));
   }
 
-  private async loadSongs() {
-    const res: any = await firstValueFrom(this.songsSvc.list({ page: 1, limit: 100 }));
+  private async loadSongs(q?: string) {
+    const params: any = { page: 1, limit: 100 };
+    if (q) params.q = q;
+
+    const res: any = await firstValueFrom(this.songsSvc.list(params));
     const rows = (res?.data ?? []) as any[];
 
     this.list = rows.map(s => ({
@@ -94,9 +102,7 @@ export class ListSongComponent implements OnInit {
         item.isLiked = likedIdSet.has(item.id);
         if (item.isLiked && !this.likedSongs.includes(item)) this.likedSongs.push(item);
       });
-    } catch {
-      // chưa login thì thôi
-    }
+    } catch {}
   }
 
   async toggleLike(index: number) {
@@ -130,7 +136,6 @@ export class ListSongComponent implements OnInit {
     }
   }
 
-  // ====== đổi filter theo id ======
   setGenreId(id: number | null) { this.selectedGenreId = id; }
 
   get filteredList(): SongVM[] {
@@ -140,15 +145,13 @@ export class ListSongComponent implements OnInit {
   }
 
   playSong(song: SongVM) {
-  // Nếu click lại vào đúng bài đang phát -> toggle
-  if (this.currentSong && this.currentSong.id === song.id) {
-    this.musicplayerService.togglePlayPause();
-    return;
+    if (this.currentSong && this.currentSong.id === song.id) {
+      this.musicplayerService.togglePlayPause();
+      return;
+    }
+    this.currentSong = song;
+    this.musicplayerService.setCurrentSong(song as any);
   }
-  // Đổi bài mới -> giao cho service
-  this.currentSong = song;
-  this.musicplayerService.setCurrentSong(song as any);
-}
 
   private formatTime(seconds: number): string {
     const minutes = Math.floor(seconds / 60);

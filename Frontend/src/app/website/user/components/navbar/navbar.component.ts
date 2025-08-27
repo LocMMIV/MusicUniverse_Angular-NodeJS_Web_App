@@ -1,6 +1,22 @@
 import { Component, OnInit, HostListener, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
+
 import { NotificationService } from '../../../../services/notification.service';
+import { SongsService } from '../../../../services/songs.service';
+import { AuthService } from '../../../../services/auth.service';
+import { environment } from '../../../../../environments/environment';
+
+type Me = {
+  id: number;
+  name: string;
+  account_name: string;
+  email: string;
+  // BE /auth/me hiện không bắt buộc trả 2 field này, để optional
+  avatar_url?: string | null;
+  created_at?: string | null;
+};
 
 @Component({
   selector: 'app-navbar',
@@ -8,180 +24,171 @@ import { NotificationService } from '../../../../services/notification.service';
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent implements OnInit {
+  // ---- account dropdown ----
   isDropdownOpen = false;
   isClicked = false;
 
+  // ---- search ----
   searchQuery = '';
   openSearch = false;
+  suggestions: string[] = [];
+  filteredSuggestions: string[] = [];
 
-  suggestions = [
-    'em xinh say hi',
-    'phim ba người',
-    'anh vui',
-    'phép màu',
-    '10 mắt 1 còn không',
-    '#zingchart'
-  ];
-  filteredSuggestions = [...this.suggestions];
-
+  // ---- clock ----
   time: string = '';
-  is24Hour: boolean = true;
+  is24Hour = true;
+
+  // ---- user/me ----
+  me: Me | null = null;
+
+  // ---- account form (fill từ me) ----
+  isInformationFormVisible = false;
+  errorMessage = '';
+
+  accountInformation = {
+    avatarUrl: 'assets/default-avatar.png',
+    id: '',
+    fullName: '',
+    email: '',
+    username: '',
+    createdAt: new Date(),
+  };
 
   constructor(
-    @Inject(PLATFORM_ID) 
-    private platformId: Object,
-    private notificationService: NotificationService,
-
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private notify: NotificationService,
+    private songsSvc: SongsService,
+    private authSvc: AuthService,
+    private router: Router,
   ) {}
 
-  ngOnInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      this.startClock();
+  async ngOnInit() {
+    if (isPlatformBrowser(this.platformId)) this.startClock();
+
+    if (this.authSvc.isLoggedIn) {
+      await this.loadMe();
     }
   }
 
-  toggleDropdown() {
-    this.isDropdownOpen = !this.isDropdownOpen;
+  // ========== LOAD ME ==========
+  private async loadMe() {
+    try {
+      const u = await firstValueFrom(this.authSvc.me());
+      this.me = u as any;
+      this.patchAccountInfoFromMe();
+    } catch (e) {
+      console.warn('loadMe failed', e);
+    }
   }
 
-  toggleClick() {
-    this.isClicked = !this.isClicked;
+  private patchAccountInfoFromMe() {
+    if (!this.me) return;
+    this.accountInformation.id       = this.me.account_name || '';
+    this.accountInformation.fullName = this.me.name || '';
+    this.accountInformation.email    = this.me.email || '';
+    this.accountInformation.username = this.me.account_name || '';
+
+    const raw = (this.me.avatar_url || '').trim();
+    this.accountInformation.avatarUrl =
+      raw
+        ? (raw.startsWith('http') ? raw : environment.assetsUrl + raw)
+        : 'assets/default-avatar.png';
+
+    this.accountInformation.createdAt =
+      this.me.created_at ? new Date(this.me.created_at) : new Date();
   }
 
+  // ========== CLOCK ==========
   startClock(): void {
     setInterval(() => {
       const now = new Date();
-      let hours = now.getHours();
-      const minutes = this.padZero(now.getMinutes());
-      const seconds = this.padZero(now.getSeconds());
-
+      let h = now.getHours();
+      const m = this.padZero(now.getMinutes());
+      const s = this.padZero(now.getSeconds());
       let ampm = '';
       if (!this.is24Hour) {
-        ampm = hours >= 12 ? 'PM' : 'AM';
-        hours = hours % 12;
-        hours = hours ? hours : 12;
+        ampm = h >= 12 ? 'PM' : 'AM';
+        h = h % 12 || 12;
       }
-
-      const hoursStr = this.padZero(hours);
-      this.time = `${hoursStr}:${minutes}:${seconds}${!this.is24Hour ? ' ' + ampm : ''}`;
+      this.time = `${this.padZero(h)}:${m}:${s}${!this.is24Hour ? ' ' + ampm : ''}`;
     }, 1000);
   }
+  toggleClockFormat() { this.is24Hour = !this.is24Hour; }
+  padZero(n: number) { return n < 10 ? '0' + n : '' + n; }
 
-  toggleClockFormat(): void {
-    this.is24Hour = !this.is24Hour;
-  }
-
-  padZero(value: number): string {
-    return value < 10 ? '0' + value : value.toString();
-  }
-
-  filterSuggestions() {
-    const q = this.searchQuery.toLowerCase();
-    this.filteredSuggestions = this.suggestions.filter(s =>
-      s.toLowerCase().includes(q)
-    );
+  // ========== SEARCH ==========
+  async filterSuggestions() {
+    const q = (this.searchQuery || '').trim();
+    if (!q) { this.filteredSuggestions = []; return; }
+    try {
+      const res: any = await firstValueFrom(this.songsSvc.list({ q, page: 1, limit: 6 }));
+      const rows = res?.data ?? [];
+      this.suggestions = rows.map((s: any) => s.title);
+      this.filteredSuggestions = this.suggestions;
+    } catch {
+      this.filteredSuggestions = [];
+    }
   }
 
   selectSuggestion(item: string) {
     this.searchQuery = item;
     this.openSearch = false;
+    this.submitSearch();
   }
 
-  @HostListener('document:click')
-  closeSearch() {
-    this.openSearch = false;
-  }
-
-  isInformationFormVisible: boolean = false;
-
-  // Biến lưu thông báo lỗi
-  errorMessage: string = '';
-
-  // Dữ liệu thông tin tài khoản ban đầu
-  accountInformation = {
-    avatarUrl: 'assets/default-avatar.png',
-    id: '123456789',
-    fullName: 'Nguyễn Văn A',
-    email: 'nguyenvana@example.com',
-    username: 'nguyenvana',
-    createdAt: new Date('2024-01-01'),  // Ngày tạo tài khoản (ví dụ: 1 tháng trước)
-  };
-
-  // Toggle form thêm thể loại
-  toggleInformationForm(): void {
-    this.isInformationFormVisible = !this.isInformationFormVisible;
-    if (!this.isInformationFormVisible) {
-      this.errorMessage = '';  // Xóa lỗi khi đóng form
+  submitSearch() {
+    const q = (this.searchQuery || '').trim();
+    if (!q) {
+      this.notify.showMessage('Nhập từ khóa để tìm bài hát.', 'warning');
+      return;
     }
+    this.openSearch = false;
+    this.router.navigate(['/list-song'], { queryParams: { q } });
   }
 
-  // Kiểm tra dữ liệu đầu vào trước khi gửi form
+  @HostListener('document:click') closeSearch() { this.openSearch = false; }
+
+  // ========== DROPDOWN ==========
+  toggleDropdown() { this.isDropdownOpen = !this.isDropdownOpen; }
+  toggleClick()    { this.isClicked = !this.isClicked; }
+
+  // ========== ACCOUNT FORM ==========
+  toggleInformationForm() {
+    this.isInformationFormVisible = !this.isInformationFormVisible;
+    if (this.isInformationFormVisible && this.me) this.patchAccountInfoFromMe();
+    if (!this.isInformationFormVisible) this.errorMessage = '';
+  }
+
   validateForm(): boolean {
     const { fullName, email, id } = this.accountInformation;
-    
-    // Kiểm tra Họ tên (không được để trống)
-    if (!fullName || fullName.trim().length === 0) {
-      this.notificationService.showMessage('Họ tên không được để trống!', 'warning');
-      return false;
-    }
-
-    // Kiểm tra Email hợp lệ
-    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-    if (!email || !emailPattern.test(email)) {
-      this.notificationService.showMessage('Email không hợp lệ!', 'error');
-      return false;
-    }
-
-    // Kiểm tra ID (không được để trống)
-    if (!id || id.trim().length === 0) {
-      this.notificationService.showMessage('Uni ID không được để trống!', 'warning');
-      return false;
-    }
-
-    // Nếu không có lỗi, trả về true
-    this.notificationService.showMessage('Sửa hồ sơ thành công!', 'success');
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!fullName?.trim()) { this.notify.showMessage('Họ tên không được để trống!', 'warning'); return false; }
+    if (!email || !emailPattern.test(email)) { this.notify.showMessage('Email không hợp lệ!', 'error'); return false; }
+    if (!id?.trim()) { this.notify.showMessage('Uni ID không được để trống!', 'warning'); return false; }
+    this.notify.showMessage('Sửa hồ sơ thành công!', 'success');
     return true;
   }
 
-  // Kiểm tra điều kiện thay đổi thông tin
-  canEditFullName(): boolean {
-    const daysSinceCreation = this.getDaysSinceCreation(this.accountInformation.createdAt);
-    return daysSinceCreation >= 7;  // Cho phép thay đổi họ tên sau 7 ngày
-  }
+  canEditFullName(): boolean { return this.getDaysSinceCreation(this.accountInformation.createdAt) >= 7; }
+  canEditId(): boolean       { return this.getDaysSinceCreation(this.accountInformation.createdAt) >= 30; }
 
-  canEditId(): boolean {
-    const daysSinceCreation = this.getDaysSinceCreation(this.accountInformation.createdAt);
-    return daysSinceCreation >= 30;  // Cho phép thay đổi ID sau 30 ngày
-  }
-
-  // Tính số ngày từ ngày tạo tài khoản đến hiện tại
   getDaysSinceCreation(date: Date): number {
-    const currentDate = new Date();
-    const diffTime = currentDate.getTime() - new Date(date).getTime();
-    return Math.floor(diffTime / (1000 * 3600 * 24));  // Số ngày chênh lệch
+    const diff = Date.now() - new Date(date).getTime();
+    return Math.floor(diff / (1000 * 3600 * 24));
   }
 
-  // Xử lý khi gửi form
-  submitInformationForm(): void {
-    // Kiểm tra dữ liệu đầu vào
+  submitInformationForm() {
     if (this.validateForm()) {
       console.log('Thông tin tài khoản đã được cập nhật:', this.accountInformation);
-      this.toggleInformationForm();  // Đóng form khi gửi thành công
-    } else {
-      // Hiển thị thông báo lỗi nếu có
-      console.log(this.errorMessage);
+      this.toggleInformationForm();
     }
   }
 
-  // Thay đổi avatar
   onAvatarChange(event: any) {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.accountInformation.avatarUrl = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
+    const file = event?.target?.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e: any) => this.accountInformation.avatarUrl = e.target.result;
+    reader.readAsDataURL(file);
   }
 }

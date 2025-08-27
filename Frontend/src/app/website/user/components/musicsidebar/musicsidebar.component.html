@@ -1,33 +1,47 @@
 <div class="music-player" *ngIf="musicService.isPlayerVisible$ | async">
-    <audio #globalAudio id="global-audio"></audio>
+  <audio id="global-audio"></audio>
 
-    <div class="song-info">
-            <h3>{{ currentSong?.songName || 'Chúc bạn nghe nhạc vui vẻ' }}</h3>
-            <p>{{ currentSong?.artist || '𝄞' }}</p>
-    </div>
+  <div class="song-info">
+    <h3>{{ currentSong?.songName || 'Chúc bạn nghe nhạc vui vẻ' }}</h3>
+    <p>{{ currentSong?.artist || '𝄞' }}</p>
+  </div>
 
-    <img class="disc" [src]="currentSong?.image || '/assets/images/default.png'" [class.spin]="currentSong ? isPlaying : true" />
+  <img class="disc"
+       [src]="currentSong?.image || '/assets/images/default.png'"
+       [class.spin]="currentSong ? isPlaying : true" />
 
-    <div class="controls">
-        <button><i class="bi bi-shuffle"></i></button>
-        <button><i class="bi bi-skip-start-fill"></i></button>
+  <div class="controls">
+    <button (click)="musicService.toggleShuffle()"
+            [class.active]="(musicService.shuffle$ | async)">
+      <i class="bi bi-shuffle"></i>
+    </button>
 
-        <button class="play" (click)="togglePlayPause()">
-            <i [ngClass]="isPlaying ? 'bi bi-pause-circle-fill' : 'bi bi-play-circle-fill'"></i>
-        </button>
+    <button (click)="musicService.prev()">
+      <i class="bi bi-skip-start-fill"></i>
+    </button>
 
-        <button><i class="bi bi-skip-end-fill"></i></button>
-        <button><i class="bi bi-repeat"></i></button>
-    </div>
+    <button class="play" (click)="togglePlayPause()">
+      <i [ngClass]="isPlaying ? 'bi bi-pause-circle-fill' : 'bi bi-play-circle-fill'"></i>
+    </button>
 
-    <div class="progress">
-        <span>{{ currentTime }}</span>
-        <input type="range" min="0" [max]="duration" [value]="progress" (input)="seek($event)" />
-        <span>{{ totalTime }}</span>
-    </div>
+    <button (click)="musicService.next()">
+      <i class="bi bi-skip-end-fill"></i>
+    </button>
 
-    <div class="volume-control">
-        <i [ngClass]="getVolumeIcon()"></i>
-        <input type="range" class="volume" min="0" max="100" [value]="volume" (input)="changeVolume($event)"/>
-    </div>
+    <button (click)="musicService.toggleRepeatMode()"
+            [class.active]="(musicService.repeatMode$ | async) !== 'off'">
+      <i [ngClass]="(musicService.repeatMode$ | async) === 'one' ? 'bi bi-repeat-1' : 'bi bi-repeat'"></i>
+    </button>
+  </div>
+
+  <div class="progress">
+    <span>{{ currentTime }}</span>
+    <input type="range" min="0" [max]="duration" [value]="progress" (input)="seek($event)" />
+    <span>{{ totalTime }}</span>
+  </div>
+
+  <div class="volume-control">
+    <i [ngClass]="getVolumeIcon()"></i>
+    <input type="range" class="volume" min="0" max="100" [value]="volume" (input)="changeVolume($event)"/>
+  </div>
 </div>

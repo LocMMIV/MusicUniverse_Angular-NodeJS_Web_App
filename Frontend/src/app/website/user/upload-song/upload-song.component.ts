@@ -46,13 +46,16 @@ export class UploadSongComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    // đồng bộ với sidebar
-    this.musicplayerService.currentSong$.subscribe(s => (this.currentSong = s));
-    this.musicplayerService.isPlaying$.subscribe(p => (this.isPlaying = p));
+  // đồng bộ với sidebar
+  this.musicplayerService.currentSong$.subscribe(s => {
+    this.currentSong = s as any; // hoặc: as SongVM | null
+  });
+  this.musicplayerService.isPlaying$.subscribe(p => (this.isPlaying = p));
 
-    await this.loadGenres();
-    await this.loadUploadedFromApi();
-  }
+  await this.loadGenres();
+  await this.loadUploadedFromApi();
+}
+
 
   // ===== UI =====
   toggleUploadForm(): void {
@@ -105,10 +108,11 @@ export class UploadSongComponent implements OnInit {
 
   // ===== Play/ Pause đồng bộ Sidebar =====
   playSong(song: SongVM) {
+    const queue = this.uploadedSongs;
     if (this.currentSong?.id === song.id) {
       this.musicplayerService.togglePlayPause();
     } else {
-      this.musicplayerService.setCurrentSong(song);
+      this.musicplayerService.playFrom(queue as any[], song as any);
     }
   }
 

@@ -19,10 +19,8 @@ export class MusicsidebarComponent implements OnInit {
   constructor(public musicService: MusicPlayerService) {}
 
   ngOnInit() {
-    // Đồng bộ state
     this.musicService.currentSong$.subscribe(song => {
       this.currentSong = song;
-      // cập nhật thời lượng khi có metadata
       const a = this.musicService.audio;
       if (a) {
         setTimeout(() => {
@@ -33,7 +31,6 @@ export class MusicsidebarComponent implements OnInit {
     });
     this.musicService.isPlaying$.subscribe(v => this.isPlaying = v);
 
-    // Bind sự kiện vào audio global
     const audio = this.musicService.audio;
     if (audio) {
       audio.ontimeupdate = () => {
@@ -47,9 +44,7 @@ export class MusicsidebarComponent implements OnInit {
     }
   }
 
-  togglePlayPause() {
-    this.musicService.togglePlayPause();
-  }
+  togglePlayPause() { this.musicService.togglePlayPause(); }
 
   seek(event: any) {
     const audio = this.musicService.audio;
