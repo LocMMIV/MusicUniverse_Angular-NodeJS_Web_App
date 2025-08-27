@@ -1,6 +1,24 @@
 import { Component, OnInit } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 import { NotificationService } from '../../../services/notification.service';
 import { MusicPlayerService } from '../../../services/music-player.service';
+import { SongsService } from '../../../services/songs.service';
+import { FavoritesService } from '../../../services/favorites.service';
+import { AuthService } from '../../../services/auth.service';
+import { GenresService } from '../../../services/genres.service';
+import { environment } from '../../../../environments/environment';
+
+type SongVM = {
+  id: number;
+  image: string;
+  songName: string;
+  artist: string;
+  genre: string;
+  genreId?: number;
+  isLiked: boolean;
+  audioUrl: string;
+  duration: string;
+};
 
 @Component({
   selector: 'app-list-song',
@@ -8,97 +26,134 @@ import { MusicPlayerService } from '../../../services/music-player.service';
   styleUrls: ['./list-song.component.css']
 })
 export class ListSongComponent implements OnInit {
-  list = [
-    { image: 'assets/images/moloichoem.jpg', songName: 'Mở Lối Cho Em', artist: 'Lương Huy Tuấn, Hữu Công', genre: 'V-pop',
-      isLiked: false, audioUrl: 'assets/audio/moloichoem.mp3', duration: '' },
-    { image: 'assets/images/noinhovohan.jpg',songName: 'Nỗi Nhớ Vô Hạn', artist: 'Thanh Hưng', genre: 'V-pop',
-      isLiked: false, audioUrl: 'assets/audio/noinhovohan.mp3', duration: '' },
-    { image: 'assets/images/moloichoem2.jpg',songName: 'Mở Lối Cho Em 2', artist: 'Lương Huy Tuấn, An Clock', genre: 'V-pop',
-      isLiked: false, audioUrl: 'assets/audio/moloichoem2.mp3', duration: '' },
-    { image: 'assets/images/vansutuyduyen.jpg',songName: 'Vạn Sự Tùy Duyên', artist: 'Thanh Hưng', genre: 'V-pop',
-      isLiked: false, audioUrl: 'assets/audio/vansutuyduyen.mp3', duration: '' },
-    { image: 'assets/images/duoitancaykhohoano.jpg',songName: 'Dưới Tán Cây Khô Hoa Nở', artist: 'J97', genre: 'V-pop',
-      isLiked: false, audioUrl: 'assets/audio/duoitancaykhohoano.mp3', duration: '' },
-    { image: 'assets/images/suotdoikhongxung.jpg',songName: 'Suốt Đời Không Xứng', artist: 'Khải Đăng, Vương Anh Tú, Ribi Sachi', genre: 'V-pop',
-      isLiked: false, audioUrl: 'assets/audio/suotdoikhongxung.mp3', duration: '' },
-    { image: 'assets/images/chanhlongthuongco4.jpg',songName: 'Chạnh Lòng Thương Cô 4', artist: 'Huy Vạc', genre: 'V-pop',
-      isLiked: false, audioUrl: 'assets/audio/chanhlongthuongco4.mp3', duration: '' },
-    { image: 'assets/images/chieuthuhoabongnang.jpg',songName: 'Chiều Thu Họa Bóng Nàng', artist: 'Đatkka', genre: 'V-pop',
-      isLiked: false, audioUrl: 'assets/audio/chieuthuhoabongnang.mp3', duration: '' },
-    { image: 'assets/images/tralaithanhxuanchoem.jpg',songName: 'Trả Lại Thanh Xuân Cho Em', artist: 'H2K', genre: 'V-pop',
-      isLiked: false, audioUrl: 'assets/audio/tralaithanhxuanchoem.mp3', duration: '' },
-  ];
+  list: SongVM[] = [];
+  likedSongs: SongVM[] = [];
 
-  likedSongs: any[] = [];
-  selectedGenre: string = '';
-  currentSong: any = null;
-  isPlaying: boolean = false;
+  // ===== Thể loại =====
+  genres: Array<{id:number; name:string}> = [];
+  selectedGenreId: number | null = null;
+
+  currentSong: SongVM | null = null;
+  isPlaying = false;
 
   constructor(
     private notificationService: NotificationService,
-    private musicplayerService: MusicPlayerService
+    private musicplayerService: MusicPlayerService,
+    private songsSvc: SongsService,
+    private favSvc: FavoritesService,
+    private authSvc: AuthService,
+    private genresSvc: GenresService
   ) {}
 
-  ngOnInit() {
-    // Lấy thời lượng mỗi bài
-    this.list.forEach(listSong => {
-      const audio = new Audio(listSong.audioUrl);
-      audio.addEventListener('loadedmetadata', () => {
-        listSong.duration = this.formatTime(audio.duration);
-      });
-    });
+  async ngOnInit() {
+    await this.loadSongs();
 
-    // Lắng nghe trạng thái play/pause & bài hát hiện tại
-    this.musicplayerService.currentSong$.subscribe(song => this.currentSong = song);
-    this.musicplayerService.isPlaying$.subscribe(state => this.isPlaying = state);
-  }
+    // tải thể loại từ BE
+    const gr: any = await firstValueFrom(this.genresSvc.list());
+    this.genres = gr?.data ?? [];
 
-  toggleLike(index: number) {
-    const listSong = this.filteredList[index];
-
-    if (listSong.isLiked) {
-      this.likedSongs = this.likedSongs.filter(item => item !== listSong);
-      this.notificationService.showMessage(`${listSong.songName} đã xóa khỏi yêu thích!`, 'success');
-    } else {
-      this.likedSongs.push(listSong);
-      this.notificationService.showMessage(`${listSong.songName} đã thêm vào yêu thích!`, 'success');
+    if (this.authSvc.isLoggedIn) {
+      await this.markLikedFromServer();
     }
 
-    listSong.isLiked = !listSong.isLiked;
+    this.musicplayerService.currentSong$.subscribe(song => (this.currentSong = song as any));
+    this.musicplayerService.isPlaying$.subscribe(state => (this.isPlaying = state));
   }
 
-  setGenre(genre: string) {
-    this.selectedGenre = this.selectedGenre === genre ? '' : genre;
+  private async loadSongs() {
+    const res: any = await firstValueFrom(this.songsSvc.list({ page: 1, limit: 100 }));
+    const rows = (res?.data ?? []) as any[];
+
+    this.list = rows.map(s => ({
+      id: s.id,
+      image: s.image_url ? environment.assetsUrl + s.image_url : '/assets/images/default.png',
+      songName: s.title,
+      artist: s.artist_name,
+      genre: s.genre_name || '',
+      genreId: s.genre_id ?? null,
+      isLiked: false,
+      audioUrl: s.audio_url ? environment.assetsUrl + s.audio_url : '',
+      duration: ''
+    }));
+
+    this.list.forEach(item => {
+      if (!item.audioUrl) return;
+      const audio = new Audio(item.audioUrl);
+      audio.addEventListener('loadedmetadata', () => {
+        item.duration = this.formatTime(audio.duration);
+      });
+    });
   }
 
-  get filteredList() {
-    return this.selectedGenre
-      ? this.list.filter(listSong => listSong.genre === this.selectedGenre)
+  private async markLikedFromServer() {
+    try {
+      const favRes: any = await firstValueFrom(this.favSvc.myList());
+      const likedRows = favRes?.data ?? [];
+      const likedIdSet = new Set(likedRows.map((x: any) => x.id ?? x.song_id ?? x.songId));
+      this.list.forEach(item => {
+        item.isLiked = likedIdSet.has(item.id);
+        if (item.isLiked && !this.likedSongs.includes(item)) this.likedSongs.push(item);
+      });
+    } catch {
+      // chưa login thì thôi
+    }
+  }
+
+  async toggleLike(index: number) {
+    const listSong = this.filteredList[index];
+    if (!this.authSvc.isLoggedIn) {
+      this.notificationService.showMessage('Vui lòng đăng nhập để dùng yêu thích.', 'error');
+      return;
+    }
+    if (!listSong?.id) {
+      this.notificationService.showMessage('Không xác định được bài hát.', 'error');
+      return;
+    }
+
+    try {
+      const res: any = await firstValueFrom(this.favSvc.toggle(listSong.id));
+      const liked = typeof res?.liked === 'boolean' ? res.liked : !listSong.isLiked;
+
+      listSong.isLiked = liked;
+      if (liked) {
+        if (!this.likedSongs.includes(listSong)) this.likedSongs.push(listSong);
+        this.notificationService.showMessage(`Đã thêm "${listSong.songName}" vào yêu thích`, 'success');
+      } else {
+        this.likedSongs = this.likedSongs.filter(s => s !== listSong);
+        this.notificationService.showMessage(`Đã bỏ yêu thích "${listSong.songName}"`, 'success');
+      }
+    } catch (e: any) {
+      const msg = e?.status === 401
+        ? 'Vui lòng đăng nhập để dùng yêu thích.'
+        : 'Không thể cập nhật yêu thích.';
+      this.notificationService.showMessage(msg, 'error');
+    }
+  }
+
+  // ====== đổi filter theo id ======
+  setGenreId(id: number | null) { this.selectedGenreId = id; }
+
+  get filteredList(): SongVM[] {
+    return this.selectedGenreId !== null
+      ? this.list.filter(s => s.genreId === this.selectedGenreId)
       : this.list;
   }
 
-  playSong(song: any) {
-    const audioPlayer = document.querySelector('audio') as HTMLAudioElement;
-
-    if (this.currentSong === song) {
-      audioPlayer.pause();
-      this.currentSong = null;
-    } else {
-      this.currentSong = song;
-      audioPlayer.src = song.audioUrl;
-      audioPlayer.play();
-      this.musicplayerService.setCurrentSong(song);
-    }
+  playSong(song: SongVM) {
+  // Nếu click lại vào đúng bài đang phát -> toggle
+  if (this.currentSong && this.currentSong.id === song.id) {
+    this.musicplayerService.togglePlayPause();
+    return;
   }
+  // Đổi bài mới -> giao cho service
+  this.currentSong = song;
+  this.musicplayerService.setCurrentSong(song as any);
+}
 
-  // Format giây thành mm:ss
-  formatTime(seconds: number): string {
+  private formatTime(seconds: number): string {
     const minutes = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${this.pad(minutes)}:${this.pad(secs)}`;
   }
-
-  pad(num: number): string {
-    return num < 10 ? '0' + num : num.toString();
-  }
+  private pad(n: number) { return n < 10 ? '0' + n : String(n); }
 }

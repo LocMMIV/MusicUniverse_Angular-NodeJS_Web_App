@@ -14,17 +14,11 @@
 
 .song-info {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  gap: 15px;
   margin: 30px 0;
   width: 100%;
-  text-align: left;
-}
-
-.info-text {
-  display: flex;
-  flex-direction: column;
 }
 
 .song-info i {

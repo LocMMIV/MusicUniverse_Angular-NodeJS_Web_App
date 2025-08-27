@@ -1,122 +1,70 @@
 import { Component, OnInit } from '@angular/core';
 import { NotificationService } from '../../../services/notification.service';
 import { MusicPlayerService } from '../../../services/music-player.service';
+import { FavoritesService } from '../../../services/favorites.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-favorite-song',
   templateUrl: './favorite-song.component.html',
-  styleUrls: ['./favorite-song.component.css']  // sửa 'styleUrsl' thành 'styleUrls'
+  styleUrls: ['./favorite-song.component.css']
 })
 export class FavoriteSongComponent implements OnInit {
-  // ==== Dữ liệu bài hát ====
-  favorite = [
-    {
-      image: '/assets/images/moloichoem.jpg',
-      songName: 'Mở Lối Cho Em',
-      artist: 'Lương Huy Tuấn, Hữu Công',
-      isLiked: true,
-      audioUrl: '/assets/audio/moloichoem.mp3',
-      duration: ''
-    },
-    {
-      image: '/assets/images/noinhovohan.jpg',
-      songName: 'Nỗi Nhớ Vô Hạn',
-      artist: 'Thanh Hưng',
-      isLiked: true,
-      audioUrl: '/assets/audio/noinhovohan.mp3',
-      duration: ''
-    },
-    {
-      image: '/assets/images/moloichoem2.jpg',
-      songName: 'Mở Lối Cho Em 2',
-      artist: 'Lương Huy Tuấn, An Clock',
-      isLiked: true,
-      audioUrl: '/assets/audio/moloichoem2.mp3',
-      duration: ''
-    },
-    {
-      image: '/assets/images/vansutuyduyen.jpg',
-      songName: 'Vạn Sự Tùy Duyên',
-      artist: 'Thanh Hưng',
-      isLiked: true,
-      audioUrl: '/assets/audio/vansutuyduyen.mp3',
-      duration: ''
-    },
-    {
-      image: '/assets/images/duoitancaykhohoano.jpg',
-      songName: 'Dưới Tán Cây Khô Hoa Nở',
-      artist: 'J97',
-      isLiked: true,
-      audioUrl: '/assets/audio/duoitancaykhohoano.mp3',
-      duration: ''
-    },
-    {
-      image: '/assets/images/suotdoikhongxung.jpg',
-      songName: 'Suốt Đời Không Xứng',
-      artist: 'Khải Đăng, Vương Anh Tú, Ribi Sachi',
-      isLiked: true,
-      audioUrl: '/assets/audio/suotdoikhongxung.mp3',
-      duration: ''
-    },
-    {
-      image: '/assets/images/chanhlongthuongco4.jpg',
-      songName: 'Chạnh Lòng Thương Cô 4',
-      artist: 'Huy Vạc',
-      isLiked: true,
-      audioUrl: '/assets/audio/chanhlongthuongco4.mp3',
-      duration: ''
-    },
-    {
-      image: '/assets/images/chieuthuhoabongnang.jpg',
-      songName: 'Chiều Thu Họa Bóng Nàng',
-      artist: 'Đatkka',
-      isLiked: true,
-      audioUrl: '/assets/audio/chieuthuhoabongnang.mp3',
-      duration: ''
-    },
-    {
-      image: '/assets/images/tralaithanhxuanchoem.jpg',
-      songName: 'Trả Lại Thanh Xuân Cho Em',
-      artist: 'H2K', 
-      isLiked: true,
-      audioUrl: '/assets/audio/tralaithanhxuanchoem.mp3',
-      duration: ''
-    }
-  ];
-
+  favorite: Array<any> = [];  // map về field cũ để giữ nguyên HTML
   likedSongs: any[] = [];
   currentSong: any = null;
   isPlaying: boolean = false;
 
   constructor(
     private notificationService: NotificationService,
-    private musicplayerService: MusicPlayerService
+    private musicplayerService: MusicPlayerService,
+    private favSvc: FavoritesService
   ) {}
 
-  ngOnInit() {
-    this.favorite.forEach(favoriteSong => {
-      const audio = new Audio(favoriteSong.audioUrl);
-      audio.addEventListener('loadedmetadata', () => {
-        favoriteSong.duration = this.formatTime(audio.duration);
-      });
-    });
+  async ngOnInit() {
+    await this.loadFavorites();
 
     this.musicplayerService.currentSong$.subscribe(song => this.currentSong = song);
     this.musicplayerService.isPlaying$.subscribe(state => this.isPlaying = state);
   }
 
-  toggleLike(index: number) {
+  private async loadFavorites() {
+    const res = await this.favSvc.myList().toPromise();
+    const rows = res?.data || [];
+    this.favorite = rows.map((s: any) => ({
+      id: s.id,
+      image: s.image_url ? environment.assetsUrl + s.image_url : '/assets/images/default.png',
+      songName: s.title,
+      artist: s.artist_name,
+      isLiked: true,
+      audioUrl: s.audio_url ? environment.assetsUrl + s.audio_url : '',
+      duration: ''
+    }));
+
+    this.favorite.forEach(item => {
+      if (!item.audioUrl) return;
+      const audio = new Audio(item.audioUrl);
+      audio.addEventListener('loadedmetadata', () => {
+        item.duration = this.formatTime(audio.duration);
+      });
+    });
+  }
+
+  async toggleLike(index: number) {
     const favoriteSong = this.favorite[index];
-
-    if (favoriteSong.isLiked) {
-      this.likedSongs = this.likedSongs.filter(song => song !== favoriteSong);
-      this.notificationService.showMessage(`${favoriteSong.songName} đã xóa khỏi danh sách yêu thích`, 'success');
-    } else {
-      this.likedSongs.push(favoriteSong);
-      this.notificationService.showMessage(`${favoriteSong.songName} đã thêm vào danh sách yêu thích`, 'success');
+    try {
+      await this.favSvc.toggle(favoriteSong.id).toPromise();
+      favoriteSong.isLiked = !favoriteSong.isLiked;
+      if (favoriteSong.isLiked) {
+        this.likedSongs.push(favoriteSong);
+        this.notificationService.showMessage(`${favoriteSong.songName} đã thêm vào danh sách yêu thích`, 'success');
+      } else {
+        this.likedSongs = this.likedSongs.filter(song => song !== favoriteSong);
+        this.notificationService.showMessage(`${favoriteSong.songName} đã xóa khỏi danh sách yêu thích`, 'success');
+      }
+    } catch (e: any) {
+      this.notificationService.showMessage(e?.error?.message || 'Không thể cập nhật yêu thích', 'error');
     }
-
-    favoriteSong.isLiked = !favoriteSong.isLiked;
   }
 
   playSong(song: any) {
@@ -124,6 +72,8 @@ export class FavoriteSongComponent implements OnInit {
       this.musicplayerService.togglePlayPause();
     } else {
       this.musicplayerService.setCurrentSong(song);
+      const audioPlayer = document.querySelector('audio') as HTMLAudioElement;
+      if (audioPlayer) { audioPlayer.src = song.audioUrl; audioPlayer.play(); }
     }
   }
 
@@ -132,7 +82,6 @@ export class FavoriteSongComponent implements OnInit {
     const secs = Math.floor(seconds % 60);
     return `${this.pad(minutes)}:${this.pad(secs)}`;
   }
-
   pad(num: number): string {
     return num < 10 ? '0' + num : num.toString();
   }

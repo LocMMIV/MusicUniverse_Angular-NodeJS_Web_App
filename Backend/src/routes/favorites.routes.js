@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { requireUser } from "../middlewares/auth.js";
+import { jwtRequireUser } from "../middlewares/authJwt.js";
+
 import {
     listMyFavorites,
     toggleFavorite,
@@ -9,9 +10,9 @@ import {
 
 const router = Router();
 
-router.get("/", requireUser, listMyFavorites);
-router.post("/:songId", requireUser, toggleFavorite);
-router.get("/:songId", requireUser, isFavorite);
-router.delete("/:songId", requireUser, removeFavorite);
+router.get("/",      jwtRequireUser, listMyFavorites);
+router.post("/:songId", jwtRequireUser, toggleFavorite);
+router.get("/:songId",  jwtRequireUser, isFavorite);
+router.delete("/:songId", jwtRequireUser, removeFavorite);
 
 export default router;

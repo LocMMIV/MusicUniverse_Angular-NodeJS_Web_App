@@ -7,8 +7,8 @@
             <div class="add-upload-song-header">
                 <h3>Thêm bài hát</h3>
                 <button type="button" class="close-button" (click)="toggleUploadForm()">
-                <i class="bi bi-x"></i>
-            </button>
+                    <i class="bi bi-x"></i>
+                </button>
             </div>
 
             <div class="form-row">
@@ -35,7 +35,11 @@
 
             <div class="form-group">
                 <label for="genre">Thể loại:</label>
-                <input type="text" id="genre" [(ngModel)]="newSong.genre" name="genre" required />
+                <select id="genre" name="genreId" [(ngModel)]="newSong.genreId" required>
+                    <option [ngValue]="null" disabled>-- Chọn thể loại --</option>
+                    <option *ngFor="let g of genres" [ngValue]="g.id">{{ g.name }}</option>
+                </select>
+                <small *ngIf="genres.length === 0">Chưa có thể loại này!</small>
             </div>
 
             <button type="submit">Tải lên</button>
@@ -48,33 +52,30 @@
             <tr>
                 <th></th>
                 <th>BÀI HÁT</th>
-                <th>THỂ LOẠI</th>
                 <th>NGHỆ SĨ</th>
+                <th>THỂ LOẠI</th>
                 <th>THỜI GIAN</th>
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let song of uploadedSongs; let i = index">
-                    <td><i class="bi bi-music-note-beamed"></i></td>
+            <tr *ngFor="let song of uploadedSongs; let i = index"
+                (click)="playSong(song)" [class.active]="currentSong?.id === song.id">
+                <td><i class="bi bi-list"></i></td>
                 <td>
-                <div class="upload-song-info">
-                    <div class="image-wrapper">
-                        <img [src]="song.image" alt="" class="upload-song-image" />
-                        <i class="bi play-icon" 
-                            [ngClass]="{ 'bi-play-fill': currentSong !== song, 'bi-pause-fill': currentSong === song }"
-                        (click)="playSong(song)"></i>
+                    <div class="upload-song-info">
+                        <div class="image-wrapper">
+                            <img [src]="song.image|| '/assets/images/default.png'" class="upload-song-image">
+                            <i class="bi play-icon" [ngClass]="{
+                                'bi-pause-fill': currentSong?.id === song.id && isPlaying,
+                                'bi-play-fill': currentSong?.id !== song.id || !isPlaying }" ></i>
+                        </div>
+                            <p class="song-name">{{ song.songName }}</p>
                     </div>
-                    <p class="duration">{{ song.duration || '...' }}</p>
-                    </div>
-                    </td>
-                    <td>{{ song.genre }}</td>
-                    <td><p class="artist">{{ song.artist }}</p></td>
-                    <td><p class="duration">{{ song.duration }}</p></td>
+                </td>
+                <td><p class="artist">{{ song.artist }}</p></td>
+                <td><p class="genre">{{ song.genre }}</p></td>
+                <td><p class="duration">{{ song.duration }}</p></td>
             </tr>
         </tbody>
     </table>
-
-    <audio #audioPlayer>
-        <source [src]="currentSong?.audioUrl" type="audio/mp3" />
-    </audio>
 </div>

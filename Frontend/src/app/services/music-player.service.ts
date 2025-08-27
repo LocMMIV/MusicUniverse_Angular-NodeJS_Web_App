@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class MusicPlayerService {
+  // Sẽ được gán trong AppComponent.ngOnInit
   audio!: HTMLAudioElement;
 
   private _isPlayerVisible = new BehaviorSubject<boolean>(true);
@@ -14,27 +15,35 @@ export class MusicPlayerService {
   private _isPlaying = new BehaviorSubject<boolean>(false);
   isPlaying$ = this._isPlaying.asObservable();
 
-  // Gọi khi muốn thay bài hát
+  /** Đổi bài hát (mọi nơi trong app chỉ gọi hàm này) */
   setCurrentSong(song: any) {
-    this._currentSong.next(song);
-
-    if (song && this.audio) {
-      this.audio.src = song.audioUrl;
-      this.audio.play();
-      this._isPlaying.next(true);
-      this._isPlayerVisible.next(true);
-    } else {
-      this.audio.pause();
-      this.audio.src = '';
-      this._isPlaying.next(false);
-      this._isPlayerVisible.next(false);
-    }
-  }
-
-  // Gọi khi người dùng toggle play
-  togglePlayPause() {
     if (!this.audio) return;
 
+    // Nếu null => tắt
+    if (!song) {
+      this.audio.pause();
+      this.audio.src = '';
+      this._currentSong.next(null);
+      this._isPlaying.next(false);
+      this._isPlayerVisible.next(false);
+      return;
+    }
+
+    // Phát bài mới
+    this._currentSong.next(song);
+    this.audio.src = song.audioUrl || '';
+    this.audio.currentTime = 0;
+    this.audio.play()
+      .then(() => {
+        this._isPlaying.next(true);
+        this._isPlayerVisible.next(true);
+      })
+      .catch(() => this._isPlaying.next(false));
+  }
+
+  /** Toggle play/pause hiện tại */
+  togglePlayPause() {
+    if (!this.audio) return;
     if (this.audio.paused) {
       this.audio.play();
       this._isPlaying.next(true);
@@ -44,11 +53,12 @@ export class MusicPlayerService {
     }
   }
 
-  setIsPlaying(value: boolean) {
-    this._isPlaying.next(value);
+  setIsPlaying(v: boolean) {
+    this._isPlaying.next(v);
   }
 
   onEnded() {
     this._isPlaying.next(false);
+    // có thể auto-next ở đây nếu bạn có queue/playlist
   }
 }

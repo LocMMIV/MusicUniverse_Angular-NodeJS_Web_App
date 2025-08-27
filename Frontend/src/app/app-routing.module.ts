@@ -6,7 +6,6 @@ const routes: Routes = [
   { path: 'admin', loadChildren: () => import('./website/admin/admin.module').then(m => m.AdminModule) },
   { path: 'user', loadChildren: () => import('./website/user/user.module').then(m => m.UserModule) },
   { path: 'auth', loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule) },
-  { path: '**', redirectTo: 'user' } // Điều hướng đến trang người dùng nếu không tìm thấy đường dẫn
 ];
 
 @NgModule({

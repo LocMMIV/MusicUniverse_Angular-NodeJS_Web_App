@@ -14,10 +14,10 @@ export class AuthInterceptor implements HttpInterceptor {
 
     return next.handle(authReq).pipe(
       catchError((err: HttpErrorResponse) => {
-        if (err.status === 401) {
-          this.tokens.clearAll();
+        // if (err.status === 401) {
+          // this.tokens.clearAll();
           // this.router.navigateByUrl('/auth'); // nếu muốn đẩy về /auth khi hết hạn token
-        }
+        // }
         return throwError(() => err);
       })
     );

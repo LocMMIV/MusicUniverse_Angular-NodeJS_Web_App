@@ -18,27 +18,39 @@ export const signToken = (user) =>
     { expiresIn: process.env.JWT_EXPIRES || "7d" }
   );
 
-// YÊU CẦU đăng nhập (JWT)
+// Bắt buộc đăng nhập
 export const jwtRequireUser = (req, res, next) => {
   try {
     const auth = req.headers.authorization || "";
     const token = auth.startsWith("Bearer ") ? auth.slice(7) : null;
     if (!token) return res.status(401).json({ message: "Missing Bearer token" });
-
     const payload = jwt.verify(token, process.env.JWT_SECRET);
-    req.auth = { id: payload.id, role: payload.role };
+    req.auth = { id: payload.id, role: payload.role || "user" };
+    req.user = req.auth;
     next();
-  } catch (err) {
+  } catch {
     return res.status(401).json({ message: "Invalid or expired token" });
   }
 };
 
-// YÊU CẦU admin (JWT)
+// Đọc thử JWT (không bắt buộc) – dùng cho GET /songs?mine=1
+export const jwtTryDecode = (req, _res, next) => {
+  try {
+    const auth = req.headers.authorization || "";
+    const token = auth.startsWith("Bearer ") ? auth.slice(7) : null;
+    if (token) {
+      const payload = jwt.verify(token, process.env.JWT_SECRET);
+      req.auth = { id: payload.id, role: payload.role || "user" };
+      req.user = req.auth;
+    }
+  } catch {}
+  next();
+};
+
 export const jwtRequireAdmin = (req, res, next) => {
   if (!req.auth) return res.status(401).json({ message: "Unauthorized" });
   if (req.auth.role !== "admin") return res.status(403).json({ message: "Admin only" });
   next();
 };
 
-// tiện: trả user public (dùng ở /me)
 export const toPublicUser = pickUserPublic;

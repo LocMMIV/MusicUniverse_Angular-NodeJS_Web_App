@@ -7,7 +7,6 @@ import authRoutes from "./auth.routes.js";
 import profileRoutes from "./profile.routes.js";
 
 
-
 export default function mountRoutes(app) {
     app.use("/api/users", usersRoutes);
     app.use("/api/songs", songsRoutes);
@@ -16,6 +15,5 @@ export default function mountRoutes(app) {
     app.use("/api/requests", requestsRoutes);
     app.use("/api/auth", authRoutes);
     app.use("/api/users", profileRoutes);
-
 
 }

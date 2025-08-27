@@ -26,25 +26,6 @@
     border-bottom: 1px solid #595962;
 }
 
-.upload-song-table tr:hover td {
-    background-color: #21222D;
-}
-
-.upload-song-table tr:hover .upload-song-name {
-    color: deepskyblue;
-}
-
-.upload-song-table tr:hover .artist,
-.upload-song-table tr:hover .duration,
-.upload-song-table tr:hover .bi-music-note-beamed,
-.upload-song-table tr:hover .bi-list {
-    color: white;
-}
-
-.upload-song-table tr:hover .album-cover {
-    filter: brightness(0.8);
-}
-
 .upload-song-table th:nth-child(1),
 .upload-song-table td:nth-child(1) { 
     width: 5%;
@@ -52,24 +33,54 @@
 }
 .upload-song-table th:nth-child(2),
 .upload-song-table td:nth-child(2) { 
-    width: 45%; 
-    text-align: left;
+    width: 40%; 
 }
 
 .upload-song-table th:nth-child(3),
 .upload-song-table td:nth-child(3) {
-    display: none;
+    width: 25%; 
 }
 
 .upload-song-table th:nth-child(4),
 .upload-song-table td:nth-child(4) { 
-    width: 40%; 
-    text-align: left;
+    width: 20%;
+    text-align: center; 
 }
 .upload-song-table th:nth-child(5),
 .upload-song-table td:nth-child(5) { 
     width: 10%; 
     text-align: center;
+}
+
+.upload-song-table tr:hover td,
+tr.active td {
+    background-color: #21222D;
+}
+
+.upload-song-table tr:hover .song-name,
+tr.active .song-name {
+    color: deepskyblue;
+}
+
+.upload-song-table tr:hover .artist,
+.upload-song-table tr:hover .duration,
+.upload-song-table tr:hover .bi-list,
+tr.active .artist,
+tr.active .duration,
+tr.active .bi-list {
+    color: white;
+}
+
+.upload-song-table tr:hover .album-cover {
+    filter: brightness(0.8);
+}
+
+tr.active .upload-song-image {
+    filter: brightness(50%);
+}
+
+tr.active .play-icon {
+    display: block;
 }
 
 .upload-song-info {
@@ -112,49 +123,37 @@
     margin-right: 15px;
 }
 
-.upload-song-name {
+.song-name {
     font-weight: 500;
     color: white;
     font-size: 18px;
     margin: 0;
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    vertical-align: middle;
 }
 
-.artist {
+.artist,
+.duration,
+.genre {
     font-size: 15px;
-    color: gray;
     font-weight: 500;
-    margin: 0;
-}
-
-.duration {
-    font-size: 15px;
     color: gray;
-    font-weight: 500;
     margin: 0;
-}
-
-.bi-music-note-beamed {
-    color: gray;
-}
-
-.bi-heart {
-    color: #ff4d4d;
-    margin-right: 20px;
-}
-
-.bi-heart-fill {
-    color: #ff4d4d;
-    margin-right: 20px;
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    vertical-align: middle;
 }
 
 .bi-list {
     color: gray;
-}
-
-.bi-list:hover {
-    border-radius: 50%;
-    background-color: #171821;
-    padding: 8px 11px;
+    font-size: 20px;
 }
 
 .upload-btn {
@@ -170,7 +169,6 @@
 .upload-btn:hover {
     background-color: deepskyblue;
 }
-
 
 .add-upload-song-form {
     position: fixed;
@@ -263,7 +261,8 @@
 
 .add-upload-song-form input[type="text"],
 .add-upload-song-form input[type="email"],
-.add-upload-song-form input[type="password"] {
+.add-upload-song-form input[type="password"],
+select {
     background-color: #21222D;
     color: white;
     border: none;
@@ -275,14 +274,16 @@
 
 .add-upload-song-form input[type="text"]:hover,
 .add-upload-song-form input[type="email"]:hover,
-.add-upload-song-form input[type="password"]:hover {
+.add-upload-song-form input[type="password"]:hover,
+select:hover {
     background-color: #1A1B24;
     outline: none;
 }
 
 .add-upload-song-form input[type="text"]:focus,
 .add-upload-song-form input[type="email"]:focus,
-.add-upload-song-form input[type="password"]:focus {
+.add-upload-song-form input[type="password"]:focus,
+select:focus {
     background-color: #1A1B24;
     outline: none;
 }
